@@ -5,11 +5,11 @@ from django.core.validators import MinValueValidator
 class Usuario(models.Model):
     id_usuario = models.AutoField(primary_key=True, unique=True)
     nome = models.TextField(max_length=150)
-    telefone = models.CharField(max_length=14, null=True)
+    telefone = models.CharField(max_length=15, null=True)
     instEnsino = models.TextField(max_length=100, null= True)
     senha = models.CharField(max_length=200, null=False)
-    email = models.CharField(max_length=254, unique=True)
-    tipo = models.CharField(max_length=50, choices=[("estudante", "Estudante"), ("professor", "Professor")], default= "Estudante")
+    email = models.EmailField(max_length=254, unique=True)
+    tipo = models.CharField(max_length=50, choices=[("estudante", "Estudante"), ("professor", "Professor"), ("organizador", "Organizador")], default= "Estudante")
 class Evento (models.Model):
     id_evento = models.AutoField(primary_key=True, unique=True)
     nome = models.TextField(max_length=100, null= True)
