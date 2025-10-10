@@ -4,8 +4,8 @@ from django.core.validators import RegexValidator, EmailValidator
 from django.core.exceptions import ValidationError
 
 #funcao para renderizar a pagina home
-def home(request):
- return render(request, 'usuarios/home.html')
+def base(request):
+    return render(request, 'funcoes.html')
 
 #Funcoes para usuarios--------------------------------------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ def delete_user(request):
        return render(request, 'usuarios/delete_usuario.html', {'usuario': usuario})
     
     if request.method == 'POST':
-        usuario = get_object_or_404(Usuario, id=usuario = usuario_id)
+        usuario = get_object_or_404(Usuario, id_usuario = usuario_id)
        
         senha = request.POST.get('senha') 
         
@@ -85,7 +85,7 @@ def cadastro_usuario(request):
         except ValidationError:
             return HttpResponse('Telefone inválido. Por favor, insira um telefone válido.')
         
-    return render(request, 'usuarios/home.html')
+    return render(request, 'usuarios/usuarios.html')
 
           
           
