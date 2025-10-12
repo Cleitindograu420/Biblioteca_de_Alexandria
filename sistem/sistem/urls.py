@@ -20,5 +20,7 @@ from login.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', base, name='cadastro_usuario'),
+    
+    #pagina inicial
+    path('', cadastro_usuario, name = "cadastro"),
 ]
