@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Lista de Usuários</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Telefone</th>
+            <th>Instituição de Ensino</th>
+            <th>E-mail</th>
+            <th>Senha</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for usuario in usuarios %}
+        <tr>
+            <td>{{ usuario.nome }}</td>
+            <td>{{ usuario.telefone }}</td>
+            <td>{{ usuario.instEnsino }}</td>
+            <td>{{ usuario.email }}</td>
+            <td>{{ usuario.senha }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock content %}

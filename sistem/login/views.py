@@ -8,7 +8,7 @@ from django.db import transaction
 
 #funcao para renderizar a pagina home
 def base(request):
-    return render(request, 'funcoes.html')
+    return render(request, 'base.html')
 
 #Funcoes para usuarios--------------------------------------------------------------------------------------------------
 
@@ -52,7 +52,7 @@ def cadastro_usuario(request):
         senha_prof = "professor123"
         senha_org = "organizador123"
 
-        #valida o telefone e o email com regex
+        ##valida o telefone e o email com regex
         telefone_valido = RegexValidator(regex= r'^\(\d{2}\) \d{4,5}-\d{4}$', 
                                      message="O telefone deve estar no formato (XX) XXXXX-XXXX ou (XX) XXXX-XXXX.")
         
@@ -100,9 +100,9 @@ def cadastro_usuario(request):
             return redirect('login')
         
         except ValidationError:
-            return HttpResponse('Telefone inválido. Por favor, insira um telefone válido.')
+            return HttpResponse('Telefone inválidos. Por favor, insira um telefone válido.')
     
-    return render(request, 'usuarios/usuarios.html')
+    return render(request, 'funcoes.html', {'usuarios': Usuario.objects.all()})
 
 def ver_usuario(request):
     usuario_id = request.session.get('usuario_id')
@@ -122,7 +122,7 @@ def ver_usuario(request):
     
     usuarios = { 'usuarios': Usuario.objects.all(), }
 
-    return render(request, 'usuarios/ver_usuarios.html', usuarios)
+    return render(request, "usuarios.html", {'usuarios': Usuario.objects.all()}) 
 
 def login_user(request):
     #se o metodo for post, ele pega as informacoes do formulario e valida elas
@@ -141,7 +141,7 @@ def login_user(request):
             #se o usuario for encontrado, cria uma sessao com o id do usuario e redireciona para a pagina de inscricoes
             if user:
                 request.session['usuario_id'] = user.id_usuario
-                return redirect('inscricao')
+                return redirect('usuario')
             
             #caso o usuario n seja encontrado, retorna uma mensagem de erro
             else:
@@ -152,7 +152,7 @@ def login_user(request):
             return HttpResponse('Email ou senha incorretos. Tente novamente.')
     
     #se o metodo for get, ele renderiza a pagina de login
-    return render(request, 'usuarios/login.html')
+    return render(request, 'login.html')
 
 def editar_usuario(request):
     usuario_id = request.session.get("usuario_id")
@@ -201,7 +201,7 @@ def editar_usuario(request):
         return redirect("inscricao")
     
     # Renderiza a página de edição com os dados do usuário atual
-    return render(request, "usuarios/editar_usuario.html", {"usuario" : usuario})
+    return render(request, "funcoes.html", {"usuario" : usuario})
 
 #Funcoes para eventos--------------------------------------------------------------------------------------------------
 
@@ -462,11 +462,8 @@ def home_inscricao(request):
     inscritos = Inscrito.objects.filter(usuario_id=usuario).values_list("evento_id", flat=True)
 
     #renderiza a pagina de inscricoes com os eventos que o usuario esta inscrito
-    return render(request, "usuarios/eventosU.html", {
-        "usuario": usuario,
-        "eventos": eventos,
-        "inscritos": inscritos
-    })
+    return render(request, 'usuarios.html', {'usuarios': Usuario.objects.all()})
+
 
 def inscricao_evento(request, usuario_id, evento_id):
     usuario_id = request.session.get("usuario_id")
@@ -496,7 +493,7 @@ def inscricao_evento(request, usuario_id, evento_id):
         return redirect("inscricao")
         
 
-    return render(request,"usuarios/meus_eventos.html", {"usuarios": Usuario.objects.all(), "eventos": Evento.objects.all()}) 
+    return render(request,"usuarios.html", "usuarios", Usuario.objects.all()) 
 
 def usuario_eventos(request, usuario_id):
     

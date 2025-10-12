@@ -3,11 +3,19 @@
 {% block content %}
     
 
-    <form action="{% url 'cadastro_usuario' %}" method="post">
+    <form action="{% url 'cadastro' %}" method="post">
+        {% csrf_token %}
         <div>
             <h1>Cadastro de Usuarios</h1>
             Nome<input name= "nome" class="form-control-sm" type="text">
             Telefone<input name= "telefone" class="form-control-sm" type="text">
+            Instituicao<input name= "instEnsino" class="form-control-sm" type="text">
+            Email<input name= "email" class="form-control-sm" type="text">
+            Senha<input name= "senha" class="form-control-sm" type="text">
+            Tipo<input name= "tipo" class="form-control-sm" type="radio" value="aluno">Aluno
+            <input name= "tipo" class="form-control-sm" type="radio" value="professor">Professor
+            <input name= "tipo" class="form-control-sm" type="radio" value="organizador">Organizador
+
             <button class="form-control-sm">Enviar</button>
         </div> 
     </form>
