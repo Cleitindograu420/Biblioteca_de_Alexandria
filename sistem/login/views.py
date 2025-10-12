@@ -3,6 +3,7 @@ from .models import Usuario,Evento, Inscrito, Certificado
 from django.core.validators import RegexValidator, EmailValidator
 from django.core.exceptions import ValidationError
 from django.contrib import messages
+from django.db import transaction
 
 #funcao para renderizar a pagina home
 def base(request):
@@ -187,7 +188,7 @@ def todos_eventos(request):
     
     return render(request, "usuarios/visu_eventos.html", eventos)
 
-def eventos(request):
+def cadastro_eventos(request):
     try:
         # Validação das informações adquiridas no campo das datas
         dia_inicio_str = request.POST.get("dataIni")
@@ -285,5 +286,228 @@ def eventos(request):
     }
     
     return render(request, 'usuarios/visu_eventos.html', eventos)
-#Funcoes para inscricoes-----------------------------------------------------------------------------------------------
+
+def verificacao_org(request):
+    usuario_id = request.session.get("usuario_id")
+    
+    if not usuario_id:
+        return redirect("login")
+      
+    try:
+        usuario = get_object_or_404(Usuario, id_usuario = usuario_id)
+    
+    except Usuario.DoesNotExist:
+        return HttpResponse("Usuário não foi encontrado.")
+    
+    if usuario.tipo != "organizador":
+        return redirect("inscricao")
+    
+    return render(request, "usuarios/eventos.html", {"usuarios" : usuario})
+
+def deletar_evento(request, pk):
+    usuario_id = request.session.get("usuario_id")
+    
+    if not usuario_id:
+        return redirect("login")
+      
+    try:
+        usuario = get_object_or_404(Usuario, id_usuario = usuario_id)
+    
+    except Usuario.DoesNotExist:
+        return HttpResponse("Usuário não foi encontrado.")
+    
+    if usuario.tipo != "organizador":
+        return redirect("inscricao")
+    
+    evento = get_object_or_404(Evento, pk = pk)
+    
+    evento.delete()
+    return redirect("even")
+
+def editar_evento(request, pk):
+    usuario_id = request.session.get("usuario_id")
+    
+    if not usuario_id:
+        return redirect("login")
+      
+    try:
+        usuario = get_object_or_404(Usuario, id_usuario = usuario_id)
+    
+    except Usuario.DoesNotExist:
+        return HttpResponse("Usuário não foi encontrado.")
+    
+    if usuario.tipo != "organizador":
+        return redirect("inscricao")
+    
+    evento = get_object_or_404(Evento, pk = pk)
+
+    if request.method == "POST":
+        nome = request.POST.get("nome")
+        tipoevento = request.POST.get("tipo_evento")
+        dataI_str = request.POST.get("dataI")
+        dataF_str = request.POST.get("dataF")
+        horarioI_str = request.POST.get("horarioI")
+        horarioF_str = request.POST.get("horarioF")
+        local = request.POST.get("local")
+        quantPart_str = request.POST.get("quantPart")
+        organResp = request.POST.get("organResp")
+        vagas_str = request.POST.get("vagas")
+        assinatura = request.POST.get("assinatura")
+        horasinp = request.POST.get("horas")
+        
+        try:
+            if nome and tipoevento and dataI_str and dataF_str and horarioI_str and horarioF_str and local and quantPart_str and organResp and vagas_str and assinatura and horasinp:
+                dataI = int(dataI_str)
+                dataF = int(dataF_str)
+                vagas = int(vagas_str)
+                quantPart = int(quantPart_str)
+                horarioI = int(horarioI_str)
+                horarioF = int(horarioF_str)
+                
+                if horasinp and horasinp.isdigit():
+                    horas = int(horasinp)
+                else:
+                    horas = horarioF - horarioI 
+                
+                if dataI < 1 or dataI > 31 or dataF < 1 or dataF > 31:
+                    return HttpResponse("A data inicial e final devem estar entre os dias 1 e 31.")
+                
+                if quantPart == 0:
+                    return HttpResponse("Um evento não pode ter 0 participantes.")
+                
+                if quantPart < 0:
+                    return HttpResponse("O evento não pode possuir um número negativo de participantes.")
+            
+                if dataI > dataF:
+                    return HttpResponse("A data inicial não pode ser depois da data final.")
+            
+                if horarioI < 0 or horarioI > 24 or horarioF < 0 or horarioF > 31:
+                    return HttpResponse("O horário deve ser entre 0 e 24.")
+            
+                if vagas > quantPart:
+                    return HttpResponse("Não pode haver uma quantidade maior de vagas do que de participantes.")
+            
+                if horarioI > horarioF:
+                    return HttpResponse("O horário inicial não pode ser menor que o horário final.")
+            
+                evento.nome = nome
+                evento.tipoevento = tipoevento
+                evento.dataI = dataI
+                evento.dataF = dataF
+                evento.horarioI = horarioI
+                evento.horarioF = horarioF
+                evento.local = local
+                evento.quantPart = quantPart
+                evento.organResp = organResp
+                evento.vagas = vagas
+                evento.horas = horas
+                evento.assinatura = assinatura 
+                evento.save()
+
+                return redirect("even")
+
+        except UnboundLocalError:
+            return HttpResponse("Todas as caixas devem ser preenchidas.")
+
+        else:
+            return HttpResponse("Nenhum dos campos pode estar vazio.")
+
+    return render(request, "usuarios/editar_evento.html", {"evento" : evento})
+#Funcoes para inscricoes------------------------------------------------------------------------------------------------
+
+def home_inscricao(request):
+    usuario_id = request.session.get("usuario_id")
+
+    if not usuario_id:
+        return redirect("login")
+
+    usuario = Usuario.objects.get(id_usuario=usuario_id)
+    eventos = Evento.objects.all()
+    
+    inscritos = Inscrito.objects.filter(usuario_id=usuario).values_list("evento_id", flat=True)
+
+    return render(request, "usuarios/eventosU.html", {
+        "usuario": usuario,
+        "eventos": eventos,
+        "inscritos": inscritos
+    })
+
+def inscricao_evento(request, usuario_id, evento_id):
+    usuario_id = request.session.get("usuario_id")
+
+    if not usuario_id:
+        return redirect("login")
+    
+    if request.method == "POST":
+        usuario = get_object_or_404(Usuario, id_usuario = usuario_id)
+        evento = get_object_or_404(Evento, id_evento = evento_id)
+    
+        if Inscrito.objects.filter(usuario_id = usuario, evento_id = evento).exists():
+            return HttpResponse("Você já está inscrito neste evento")
+     
+        if evento.vagas <= 0:
+            return HttpResponse("Não há mais vagas disponíveis")
+    
+        Inscrito.objects.create(usuario_id = usuario, evento_id = evento)
+
+        evento.vagas -= 1
+        evento.save()
+        
+        messages.success(request, f"Você foi inscrito com sucesso no seguinte evento: {evento.nome}!")
+        return redirect("inscricao")
+        
+
+    return render(request,"usuarios/meus_eventos.html", {"usuarios": Usuario.objects.all(), "eventos": Evento.objects.all()}) 
+
+def usuario_eventos(request, usuario_id):
+    user = get_object_or_404(Usuario, id_usuario = usuario_id)
+    inscricoes = Inscrito.objects.filter(usuario_id = user)
+    
+    eventos = [inscricao.evento_id for inscricao in inscricoes]
+    
+    return render(request, "usuarios/meus_eventos.html", {"usuario" : user, "eventos" : eventos})
+
 #Funcoes para certificados----------------------------------------------------------------------------------------------
+
+def ver_certificados(request):
+    eventos = {
+        'eventos' : Evento.objects.filter(emitido = False)
+    }
+    
+    return render(request, "usuarios/certificados.html", eventos)
+
+def emitir_certificados(request, evento_id):
+    with transaction.atomic():
+        try:
+            evento = get_object_or_404(Evento, pk = evento_id)
+
+            inscricoes = Inscrito.objects.filter(evento_id = evento.pk)
+
+            if not inscricoes.exists():
+                return HttpResponse("Não há inscritos para este evento.")
+            
+            for inscricao in inscricoes:
+                Certificado.objects.create(usuario_id = inscricao.usuario_id, evento_id = inscricao.evento_id, assinatura = inscricao.evento_id.assinatura, horas = inscricao.evento_id.horas)
+            
+            Inscrito.objects.filter(evento_id = evento.pk).delete()        
+            
+            evento.emitido = True
+            evento.save()
+            
+        except Exception as e:
+            return HttpResponse(f"Erro na emissão de certificados: {e}")
+            
+    return redirect("/certificados/")
+
+def meus_certificados(request):
+    usuario_id = request.session.get("usuario_id")
+    
+    try:
+        usuario = get_object_or_404(Usuario, id_usuario = usuario_id)
+        certs = Certificado.objects.filter(usuario_id = usuario)
+    
+    except Exception:
+        return HttpResponse("Erro ao buscar certificados.")
+    
+    return render(request, "usuarios/meus_certificados.html", {"usuario" : usuario, "certificados" : certs})
+
