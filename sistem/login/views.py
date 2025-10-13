@@ -39,18 +39,31 @@ def delete_user(request):
         return redirect('login')
 
 def cadastro_usuario(request):
-    #se o metodo for post, ele pega as informacoes do formulario e valida elas
     if request.method == 'POST':
         nome = request.POST.get('nome')
         telefone = request.POST.get('telefone')
         instEnsino = request.POST.get('instEnsino')
         senha = request.POST.get('senha')
         email = request.POST.get('email')
-        tipo = request.POST.get('tipo')
+        tipo = request.POST.get('tipo', '').lower()
         senha_tipo = request.POST.get('senha_acesso')
-        #verifica se o tipo de usuario e professor ou organizador e define a senha de acesso correta para cada tipo
-        senha_prof = "professor123"
-        senha_org = "organizador123"
+
+        senha_prof = "professor"
+        senha_org = "organizador"
+
+        # Captura a senha correta dependendo do tipo
+        if tipo == "professor":
+            senha_tipo = request.POST.get("senha_pro")
+            if senha_tipo != senha_prof:
+                return HttpResponse('Senha de acesso incorreta para o tipo Professor.')
+        elif tipo == "organizador":
+            senha_tipo = request.POST.get("senha_acesso")
+            if senha_tipo != senha_org:
+                return HttpResponse('Senha de acesso incorreta para o tipo Organizador.')
+        else:
+            senha_tipo = request.POST.get("senha")  # aluno usa senha livre
+
+
 
         ##valida o telefone e o email com regex
         telefone_valido = RegexValidator(regex= r'^\(\d{2}\) \d{4,5}-\d{4}$', 
@@ -229,97 +242,41 @@ def todos_eventos(request):
     return render(request, "usuarios/visu_eventos.html", eventos)
 
 def cadastro_eventos(request):
-    try:
-        # Validação das informações adquiridas no campo das datas
+    from datetime import datetime
+    
+    if request.method == "POST":
         dia_inicio_date = request.POST.get("dataIni")
         dia_fim_date = request.POST.get("dataFin")
 
-        # Verifica se os espaços dos dias não estão vazios
-        if not dia_inicio_date or not dia_fim_date:  
+        if not dia_inicio_date or not dia_fim_date:
             return HttpResponse("O campo data de início e final são obrigatórios")
 
-        
         try:
-            dia_inicio = int(dia_inicio_date)
-            dia_fim = int(dia_fim_date)
+            dia_inicio = datetime.strptime(dia_inicio_date, "%Y-%m-%d").date()
+            dia_fim = datetime.strptime(dia_fim_date, "%Y-%m-%d").date()
         except ValueError:
             return HttpResponse("O campo data de início e final devem ser uma data válida")
 
-        
-        # Validação das informações adquiridas no campo dos horários
-        horarioIni_h = request.POST.get("horarioIni")
-        horarioFin_h = request.POST.get("horarioFin")
-        
-        # Verifica se os espaços não estão vazios
-        if not horarioIni_h or not horarioFin_h:
-            return HttpResponse("O campo do horário inicial e final são obrigatórios")
-        
-        try:
-            horario_inicio = int(horarioIni_h)
-            horario_final = int(horarioFin_h)
-        except ValueError:
-            return HttpResponse("O campo do horário inicial e final devem ser um horário válido")
-        
-        # Validação das informações adquiridas no campo das vagas
-        vagas_int = request.POST.get("vagas")
-        quantParticipantes_str = request.POST.get("quantPart")
-        
-        # Verifica se a informação adquirida é um número inteiro
-        try:
-            vagasInt = int(vagas_int)
-        except ValueError:
-            return HttpResponse("O valor das vagas deve ser um número inteiro positivo")
-        
-        try:
-            quantParticipantesInt = int(quantParticipantes_str)
-        except ValueError:
-            return HttpResponse("O valor da quantidade de participantes deve ser um valor inteiro positivo")
-        
-        # Verifica se há uma quantidade maior de vagas do que de participantes
-        if vagasInt > quantParticipantesInt:
-            return HttpResponse("Não pode haver um número maior de vagas do que de participantes")
-        
-        # Verifica se os valores são positivos
-        if quantParticipantesInt < 0:
-            return HttpResponse("Não pode haver uma quantidade negativa de participantes")
-        
-        if vagasInt < 0:
-            return HttpResponse("Não pode haver uma quantidade negativa de vagas")
-        
-        horasC = horario_final - horario_inicio
-        
-        horasinp = request.POST.get("horas")
-        if horasinp and horasinp.isdigit():
-            horas = int(horasinp)
-        else:
-            horas = horasC
-        
-        # Caso todas as informações sejam verificadas, um novo evento é criado
+        # (as demais validações e criação do evento...)
+
         novo_evento = Evento(
-        nome = request.POST.get("nome"),
-        tipoevento = request.POST.get("tipoE"),
-        dataI = dia_inicio,
-        dataF = dia_fim,
-        horarioIni = horario_inicio,
-        horarioFin = horario_final,
-        horasDura = horas,
-        local = request.POST.get("local"),
-        quantPart = quantParticipantesInt,
-        organResp = request.POST.get("organResp"),
-        vagas = vagasInt
+            nome=request.POST.get("nome"),
+            tipoEvento=request.POST.get("tipoEvento"),  # cuidado: seu HTML usa 'tipoEvento', não 'tipoE'
+            dataIni=dia_inicio,
+            dataFin=dia_fim,
+            horasDura=request.POST.get("horasDura"),
+            local=request.POST.get("local"),
+            quantPart=request.POST.get("quantPart"),
+            organizador=request.POST.get("organResp"),
+            vagas=request.POST.get("vagas"),
         )
-        
-        novo_evento.save()    
-    
-    except ValueError:
-        messages.error(request, "Erro")
-        return redirect("visu_eventos")
-    
-    eventos = {
-        'eventos' : Evento.objects.all()
-    }
-    
-    return render(request, 'usuarios/visu_eventos.html', eventos)
+        novo_evento.save()
+
+        return redirect("eventos")
+
+    # Se for GET, apenas exibe o formulário
+    return render(request, 'cad_eventos.html')
+
 
 def verificacao_org(request):
     usuario_id = request.session.get("usuario_id")

@@ -25,9 +25,16 @@
              <a class="nav-link" href="{% url 'login' %}" target="_self">Login</a><br>
           </li>
         
-          <li class="nav-item">
-            <a class="nav-link" href="#">Contact</a>
+          <li class="nav-item active">
+            <a class="nav-link" href={% url 'cadastro_evento' %}>Eventos</a>
           </li>
+          {% if usuario and usuario.tipo == 'organizador' %}
+            <li class="nav-item active">
+              <a class="nav-link btn btn-outline-primary ml-2" href="{% url 'ver_usuario' %}">
+                Gerenciar Usuários
+              </a>
+            </li>
+        {% endif %}
         </ul>
       </div>
     </nav>

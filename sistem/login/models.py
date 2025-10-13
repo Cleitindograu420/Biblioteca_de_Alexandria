@@ -16,8 +16,6 @@ class Evento (models.Model):
     tipoEvento = models.TextField(max_length=200)
     dataIni = models.DateField()
     dataFin = models.DateField()
-    horarioIni = models.TimeField()
-    horarioFin = models.TimeField()
     horasDura = models.TimeField(null=True, blank=True)
     local = models.TextField(max_length=200)
     quantPart = models.IntegerField(validators=[MinValueValidator(0)])
