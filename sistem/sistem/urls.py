@@ -19,12 +19,15 @@ from django.urls import path
 from login import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),  # adicionado
-    path('', views.base, name='base'),
+    path('admin/', admin.site.urls),
+    path('', views.base, name = "home_page"),
+    path('home_organizador/', views.base, name='home_organizador'),
     path('cadastro/', views.cadastro_usuario, name='cadastro'),
     path('login/', views.login_user, name='login'),
-    path('usuarios/', views.ver_usuario, name='usuario'),
+    path('usuarios/', views.editar_usuario, name='edit_user'),
+    path('usuarios/totais', views.ver_usuario, name='usuario'),
     path('cadastro_evento/', views.cadastro_eventos, name='cadastro_evento'),
     path('eventos/', views.todos_eventos, name='eventos'),
-    path("home_inscricao/", views.home_inscricao, name = "inscricao"),
+    path('eventos/inscricao', views.inscricao_evento, name='inscricao_eventos'),
+    path("home_inscricao/", views.home_inscricao, name = "list_inscricao"),
 ]

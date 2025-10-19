@@ -6,14 +6,26 @@ from django.core.exceptions import ValidationError
 from django.contrib import messages
 from django.db import transaction
 
+
 #funcao para renderizar a pagina home
 def base(request):
-    return render(request, 'base.html')
+    usuario_id = request.session.get("usuario_id")
+
+    if not usuario_id:
+        return redirect("login")
+    
+    usuario = get_object_or_404(Usuario, id_usuario=usuario_id)
+
+     # redireciona conforme o tipo
+    if usuario.tipo == "organizador":
+        return render(request, "base_org.html", {"usuario": usuario})
+    else:
+        return render(request, "base.html", {"usuario": usuario})
+
 
 #Funcoes para usuarios--------------------------------------------------------------------------------------------------
 
 #funcao para deletar usuario de acordo com o id
-#nao sei explicar direito oq ta acontecendo aqui, fui fazendo pelo auto complete do vscode
 def delete_user(request):
     #esse trecho se repete em quase todas as funcoes, ele pega o id do usuario que ta logado na sessao e se n tiver ninguem logado redireciona pra tela de login
     usuario_id = request.session.get('usuario_id')
@@ -48,26 +60,23 @@ def cadastro_usuario(request):
         tipo = request.POST.get('tipo', '').lower()
         senha_tipo = request.POST.get('senha_acesso')
 
-        senha_prof = "professor"
-        senha_org = "organizador"
+        token_acesso = request.POST.get("token_acesso")
 
-        # Captura a senha correta dependendo do tipo
-        if tipo == "professor":
-            senha_tipo = request.POST.get("senha_pro")
-            if senha_tipo != senha_prof:
-                return HttpResponse('Senha de acesso incorreta para o tipo Professor.')
-        elif tipo == "organizador":
-            senha_tipo = request.POST.get("senha_acesso")
-            if senha_tipo != senha_org:
-                return HttpResponse('Senha de acesso incorreta para o tipo Organizador.')
-        else:
-            senha_tipo = request.POST.get("senha")  # aluno usa senha livre
+        # token pré-definido
+        TOKEN_CORRETO = "ORG123"
+        
+        #Valida se o token de acesso esta correto para organizadores
+        if tipo == "organizador":
+            if token_acesso != TOKEN_CORRETO:
+                messages.error(request, "Token de acesso inválido! Cadastro não autorizado.")
+                return redirect("cadastro")
+            
+        ##valida o telefone com regex
+        telefone_valido = RegexValidator(
+            regex=r'^\(?\d{2}\)? ?\d{4,5}-\d{4}$',
+            message="O telefone deve estar no formato (XX) XXXXX-XXXX ou XX XXXXX-XXXX."
+        )
 
-
-
-        ##valida o telefone e o email com regex
-        telefone_valido = RegexValidator(regex= r'^\(\d{2}\) \d{4,5}-\d{4}$', 
-                                     message="O telefone deve estar no formato (XX) XXXXX-XXXX ou (XX) XXXX-XXXX.")
         
         #valida o email com a funcao EmailValidator nativa do django
         email_valido = EmailValidator(message="O email fornecido é inválido.")
@@ -80,16 +89,6 @@ def cadastro_usuario(request):
             #se o telefone ja estiver cadastrado, retorna uma mensagem de erro
             if Usuario.objects.filter(telefone = telefone).exists():
                 return HttpResponse('Telefone já cadastrado. Por favor, utilize outro telefone.')
-            
-            #se o tipo de usuario for professor, verifica se a senha de acesso bate com a senha correta
-            if tipo == "professor":
-                if senha_tipo != senha_prof:
-                    return HttpResponse('Senha de acesso incorreta para o tipo Professor.')
-            
-            #se o tipo de usuario for organizador, verifica se a senha de acesso bate com a senha correta, igual a cima
-            elif tipo == "organizador":
-                if senha_tipo != senha_org:
-                    return HttpResponse('Senha de acesso incorreta para o tipo Organizador.')
             
             #se o email ja estiver cadastrado, retorna uma mensagem de erro
             try:
@@ -135,7 +134,7 @@ def ver_usuario(request):
     
     usuarios = { 'usuarios': Usuario.objects.all(), }
 
-    return render(request, "usuarios.html", {'usuarios': Usuario.objects.all()}) 
+    return render(request, "templates_org/usuarios_org.html", {'usuarios': Usuario.objects.all()}) 
 
 def login_user(request):
     #se o metodo for post, ele pega as informacoes do formulario e valida elas
@@ -190,8 +189,11 @@ def editar_usuario(request):
             return HttpResponse("Este email já está cadastrado por outro usuário")
 
         # Validação para verificar se o telefone e email estão em um formato válido
-        telefone_valido = RegexValidator(regex= r'^\(\d{2}\) \d{4,5}-\d{4}$', 
-                                     message="O telefone deve estar no formato (XX) XXXXX-XXXX ou (XX) XXXX-XXXX.")
+        ##valida o telefone com regex
+        telefone_valido = RegexValidator(
+            regex=r'^\(?\d{2}\)? ?\d{4,5}-\d{4}$',
+            message="O telefone deve estar no formato (XX) XXXXX-XXXX ou XX XXXXX-XXXX."
+        )
         email_valido = EmailValidator(message="O email fornecido é inválido.")
 
         #se o telefone ou email forem invalidos, retorna uma mensagem de erro
@@ -211,11 +213,14 @@ def editar_usuario(request):
         usuario.save()
         
         # Redireciona o usuário para a página de inscrição após a edição
-        return redirect("inscricao")
-    
-    # Renderiza a página de edição com os dados do usuário atual
-    return render(request, "funcoes.html", {"usuario" : usuario})
+        return redirect("inscricao_eventos")
 
+        
+    # Renderiza a página de edição com os dados do usuário atual
+    if usuario.tipo == 'organizador':
+        return render(request, "templates_org/editar_user_org.html", {"usuario" : usuario})
+    else:
+        return render(request, "editar_user.html", {"usuario" : usuario})
 #Funcoes para eventos--------------------------------------------------------------------------------------------------
 
 def todos_eventos(request):
@@ -232,14 +237,14 @@ def todos_eventos(request):
     
     #se o usuario n for organizador, redireciona ele para a pagina de inscricoes, apenas organizadores podem ver a lista de eventos
     if usuario.tipo != "organizador":
-        return redirect("inscricao")
+        return redirect("inscricao_eventos")
     
     # Renderiza a página com todos os eventos
     eventos = {
         'eventos' : Evento.objects.all()
     }
     
-    return render(request, "usuarios/visu_eventos.html", eventos)
+    return render(request, "templates_org/list_eventos_org.html", eventos)
 
 def cadastro_eventos(request):
     from datetime import datetime
@@ -275,8 +280,7 @@ def cadastro_eventos(request):
         return redirect("eventos")
 
     # Se for GET, apenas exibe o formulário
-    return render(request, 'cad_eventos.html')
-
+    return render(request, 'templates_org/cad_eventos_org.html')
 
 def verificacao_org(request):
     usuario_id = request.session.get("usuario_id")
@@ -419,7 +423,7 @@ def home_inscricao(request):
     inscritos = Inscrito.objects.filter(usuario_id=usuario).values_list("evento_id", flat=True)
 
     #renderiza a pagina de inscricoes com os eventos que o usuario esta inscrito
-    return render(request, 'usuarios.html', {'usuarios': Usuario.objects.all()})
+    return render(request, 'list_inscricoes.html', {'usuarios': Usuario.objects.all(), 'eventos': eventos, 'inscritos': inscritos, 'usuario': usuario})
 
 
 def inscricao_evento(request, usuario_id, evento_id):
@@ -447,10 +451,10 @@ def inscricao_evento(request, usuario_id, evento_id):
         evento.save()
         
         messages.success(request, f"Você foi inscrito com sucesso no seguinte evento: {evento.nome}!")
-        return redirect("inscricao")
+        return redirect("list_inscricao")
         
 
-    return render(request,"usuarios.html", "usuarios", Usuario.objects.all()) 
+    return render(request,"inscricao.html", "usuarios", Usuario.objects.all()) 
 
 def usuario_eventos(request, usuario_id):
     

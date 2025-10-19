@@ -12,7 +12,7 @@
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="#">Bibl alex</a>
+      <a class="navbar-brand" href="{% url 'home_page' %}">Bibl alex</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
@@ -24,17 +24,14 @@
           <li class="nav-item active">
              <a class="nav-link" href="{% url 'login' %}" target="_self">Login</a><br>
           </li>
-        
+          
           <li class="nav-item active">
-            <a class="nav-link" href={% url 'cadastro_evento' %}>Eventos</a>
+            <a class="nav-link" href={% url 'list_inscricao' %}>Eventos inscritos</a>
           </li>
-          {% if usuario and usuario.tipo == 'organizador' %}
-            <li class="nav-item active">
-              <a class="nav-link btn btn-outline-primary ml-2" href="{% url 'ver_usuario' %}">
-                Gerenciar Usuários
-              </a>
-            </li>
-        {% endif %}
+          
+          <li class="nav-item active">
+            <a class="nav-link" href={% url 'edit_user' %}>Perfil</a>
+          </li>
         </ul>
       </div>
     </nav>

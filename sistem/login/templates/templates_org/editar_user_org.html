@@ -1,0 +1,32 @@
+{% extends "base_org.html" %}
+
+{% block content %}
+
+<h1>Perfil do Usuario</h1>
+<form action="{% url 'edit_user' %}" method="post">
+    {% csrf_token %}
+    <div>
+        <label for="Nome">Nome:</label>
+        <input name= "nome" class="form-control-sm" type="text" value='{{ usuario.nome }}'>
+    </div>
+    <div>
+        <label for="Telefone">Telefone:</label>
+        <input name= "telefone" class="form-control-sm" type="text" value='{{ usuario.telefone }}'>
+    </div>
+    <div>
+        <label for="Email">Email:</label>
+        <input name= "email" class="form-control-sm" type="text" value='{{ usuario.email }}'>
+    </div>
+    <div>
+        <label for="Senha">Senha:</label>
+        <input name= "senha" class="form-control-sm" type="text" value='{{ usuario.senha }}'>
+    </div>
+    <div>
+        <label for="Instituicao">Instituicao de Ensino:</label>
+        <input name= "instEnsino" class="form-control-sm" type="text" value='{{ usuario.instEnsino }}'>
+    </div>
+    
+    <button class="form-control-sm" type="submit">Salvar perfil</button>
+</form>
+
+{% endblock  %}
