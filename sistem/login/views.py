@@ -130,7 +130,7 @@ def ver_usuario(request):
     
     #se o usuario n for organizador, redireciona ele para a pagina de inscricoes, apenas organizadores podem ver a lista de usuarios
     if usuario.tipo != 'organizador':
-        return redirect('inscricao')
+        return redirect('inscricao_eventos')
     
     usuarios = { 'usuarios': Usuario.objects.all(), }
 
@@ -153,7 +153,7 @@ def login_user(request):
             #se o usuario for encontrado, cria uma sessao com o id do usuario e redireciona para a pagina de inscricoes
             if user:
                 request.session['usuario_id'] = user.id_usuario
-                return redirect('usuario')
+                return redirect('home_page')
             
             #caso o usuario n seja encontrado, retorna uma mensagem de erro
             else:
@@ -411,40 +411,37 @@ def editar_evento(request, pk):
 
 def home_inscricao(request):
     usuario_id = request.session.get("usuario_id")
-
     if not usuario_id:
         return redirect("login")
-
-    #pega o usuario logado, todos os eventos
-    usuario = Usuario.objects.get(id_usuario=usuario_id)
-    eventos = Evento.objects.all()
     
-    #pega os eventos que o usuario ja ta inscrito
-    inscritos = Inscrito.objects.filter(usuario_id=usuario).values_list("evento_id", flat=True)
+    usuario = get_object_or_404(Usuario, id_usuario=usuario_id)
+    
+    inscritos = Inscrito.objects.filter(usuario_id=usuario)
+    
+    #Lista de eventos em que o usuário está inscrito
+    eventos_inscritos = [i.evento_id for i in inscritos]
+    
+    return render(request, "list_inscricoes.html", {
+        "usuario": usuario,
+        "eventos": eventos_inscritos,
+    })
 
-    #renderiza a pagina de inscricoes com os eventos que o usuario esta inscrito
-    return render(request, 'list_inscricoes.html', {'usuarios': Usuario.objects.all(), 'eventos': eventos, 'inscritos': inscritos, 'usuario': usuario})
-
-
-def inscricao_evento(request, usuario_id, evento_id):
+def inscricao_evento(request, evento_id):
     usuario_id = request.session.get("usuario_id")
 
     if not usuario_id:
         return redirect("login")
     
-    #recebe o id do usuario e do evento pelo html
     if request.method == "POST":
         usuario = get_object_or_404(Usuario, id_usuario = usuario_id)
         evento = get_object_or_404(Evento, id_evento = evento_id)
-        
-        #verifica se o usuario ja ta inscrito no evento e se ainda ha vagas disponiveis
+    
         if Inscrito.objects.filter(usuario_id = usuario, evento_id = evento).exists():
             return HttpResponse("Você já está inscrito neste evento")
      
         if evento.vagas <= 0:
             return HttpResponse("Não há mais vagas disponíveis")
-
-        #se tudo estiver ok, cria a inscricao e diminui o numero de vagas disponiveis
+    
         Inscrito.objects.create(usuario_id = usuario, evento_id = evento)
 
         evento.vagas -= 1
@@ -454,7 +451,25 @@ def inscricao_evento(request, usuario_id, evento_id):
         return redirect("list_inscricao")
         
 
-    return render(request,"inscricao.html", "usuarios", Usuario.objects.all()) 
+    return render(request,"inscricao.html", {"usuarios": Usuario.objects.all(), "eventos": Evento.objects.all()}) 
+
+def eventos_disponiveis(request):
+    usuario_id = request.session.get("usuario_id")
+    if not usuario_id:
+        return redirect("login")
+    
+    usuario = get_object_or_404(Usuario, id_usuario=usuario_id)
+    
+    #Lista de eventos em que o usuário já está inscrito
+    inscritos_ids = Inscrito.objects.filter(usuario_id=usuario).values_list('evento_id', flat=True)
+    
+    eventos = Evento.objects.all()
+    
+    return render(request, "inscricao.html", {
+        "usuario": usuario,
+        "eventos": eventos,
+        "inscritos": inscritos_ids,  # só os IDs
+    })
 
 def usuario_eventos(request, usuario_id):
     

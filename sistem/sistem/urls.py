@@ -17,17 +17,21 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from login import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.base, name = "home_page"),
+    path('login/', views.login_user, name='login'),
+    path('logout/', views.logout, name='logout'),
     path('home_organizador/', views.base, name='home_organizador'),
     path('cadastro/', views.cadastro_usuario, name='cadastro'),
-    path('login/', views.login_user, name='login'),
     path('usuarios/', views.editar_usuario, name='edit_user'),
     path('usuarios/totais', views.ver_usuario, name='usuario'),
     path('cadastro_evento/', views.cadastro_eventos, name='cadastro_evento'),
     path('eventos/', views.todos_eventos, name='eventos'),
-    path('eventos/inscricao', views.inscricao_evento, name='inscricao_eventos'),
+    path("eventos_disp/", views.eventos_disponiveis, name="inscricao_evento_disp"),
+    path('eventos/inscricao/<int:evento_id>/', views.inscricao_evento, name='inscricao_evento'),
     path("home_inscricao/", views.home_inscricao, name = "list_inscricao"),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
