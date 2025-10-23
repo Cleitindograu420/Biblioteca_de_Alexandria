@@ -447,7 +447,6 @@ def inscricao_evento(request, evento_id):
         evento.vagas -= 1
         evento.save()
         
-        messages.success(request, f"Você foi inscrito com sucesso no seguinte evento: {evento.nome}!")
         return redirect("list_inscricao")
         
 
