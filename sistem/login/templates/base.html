@@ -1,46 +1,44 @@
 <!DOCTYPE html>
+{% load static %}
+
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     <link rel="shortcut icon" href="{% static 'Imagens/agenda.png' %}">
     <title>
       {% block title %}
-        Django App
+        Bibl alexandria
       {% endblock %}
     </title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"  rel="stylesheet" />
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="#">Bibl alex</a>
+      <a class="navbar-brand" href="{% url 'home_page' %}">Bibl alex</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
         
           <li class="nav-item active">
-             <a class="nav-link" href="{% url 'cadastro' %}" target="_self">Cadastro</a><br>
+            <a class="nav-link" href={% url 'edit_user' %}>Perfil</a>
           </li>
-        
           <li class="nav-item active">
-             <a class="nav-link" href="{% url 'login' %}" target="_self">Login</a><br>
+            <a class="nav-link" href={% url 'logout' %}>Sair</a>
           </li>
-        
-          <li class="nav-item active">
-            <a class="nav-link" href={% url 'cadastro_evento' %}>Eventos</a>
-          </li>
-          {% if usuario and usuario.tipo == 'organizador' %}
-            <li class="nav-item active">
-              <a class="nav-link btn btn-outline-primary ml-2" href="{% url 'ver_usuario' %}">
-                Gerenciar Usuários
-              </a>
-            </li>
-        {% endif %}
         </ul>
       </div>
     </nav>
-    <div class="container">
+
+    <div class="container" s = 40px>
       {% block content %} 
-      
+        <section class="botoes-principais">
+          <div class="botao">
+            <a href="{% url 'list_inscricao' %}">
+              <img src="{% static 'Imagens/temple.png' %}" alt="templo grego" title="Eventos inscritos">
+            </a>
+          </div>
+      </section>
       {% endblock %}
     </div>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>

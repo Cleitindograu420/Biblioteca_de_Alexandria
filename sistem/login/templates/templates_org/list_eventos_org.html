@@ -1,0 +1,36 @@
+{% extends "base_org.html" %}
+{% block content %}
+
+<h2>Lista de Eventos</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Tipo</th>
+            <th>Data de inicio</th>
+            <th>Data de encerramento</th>
+            <th>Duracao</th>
+            <th>Local</th>
+            <th>Participantes</th>
+            <th>Vagas</th>
+            <th>Organizador</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for evento in eventos %}
+        <tr>
+            <td>{{ evento.nome }}</td>
+            <td>{{ evento.tipoevento }}</td>
+            <td>{{ evento.dataIni }}</td>
+            <td>{{ evento.dataFin }}</td>
+            <td>{{ evento.horasDura }}</td>
+            <td>{{ evento.local }}</td>
+            <td>{{ evento.quantPart }}</td>
+            <td>{{ evento.vagas }}</td>
+            <td>{{ evento.organizador }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock content %}

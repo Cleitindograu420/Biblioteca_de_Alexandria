@@ -34,10 +34,9 @@
             <label for="senha_acesso">Senha de acesso:</label>
             <input name="senha_acesso" class="form-control-sm" type="text">
         </div>
-        <!--Senha para professor-->
-        <div id="senhaproDiv" style="display: none;">
-            <label for="senha_pro">Senha_pro:</label>
-            <input name="senha_pro" class="form-control-sm" type="text">
+        <div id="tokenAcessoDiv" style="display: none;">
+            <label for="token_acesso">Token de acesso:</label>
+            <input name="token_acesso" class="form-control-sm" type="text">
         </div>
 
         
@@ -53,28 +52,24 @@
             // Exibe o campo de senha especial somente se "organizador" for selecionado
             const radios = document.querySelectorAll('input[name="tipo"]');
             const senhaDiv = document.getElementById('senhaAcessoDiv');
-            const senhapro2 = document.getElementById('senhaproDiv');
             const senhaDiv2 = document.getElementById('senhaDiv');
+            const tokenDiv = document.getElementById('tokenAcessoDiv');
             radios.forEach(radio => {
                 radio.addEventListener('change', function() {
                     if (this.value === 'organizador') {
                         senhaDiv.style.display = 'block';
-                        senhapro2.style.display = 'none';
                         senhaDiv2.style.display = 'none';
-                    }else if (this.value === 'professor') {
-                        senhaDiv.style.display = 'none';
-                        senhapro2.style.display = 'block';
-                        senhaDiv2.style.display = 'none';
+                        tokenDiv.style.display = 'block';
                     } else {
                         senhaDiv.style.display = 'none';
                         senhaDiv2.style.display = 'block';
-                        senhapro2.style.display = 'none';
+                        tokenDiv.style.display = 'none';
+
 
                     }
                 });
             });
         </script>
-        
             <button class="form-control-sm">Enviar</button>
     </form>
 {% endblock content %}

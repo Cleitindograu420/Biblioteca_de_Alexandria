@@ -1,0 +1,60 @@
+{% extends "base_org.html" %}
+
+{% block content %}
+<form action="{% url 'cadastro_evento' %}" method="post">
+    {% csrf_token %}
+
+    <div>
+        <h1>Cadastro de Eventos</h1>
+    </div> 
+
+    <div>
+        <label>Nome:</label>
+        <input name="nome" class="form-control-sm" type="text">
+    </div>
+
+    <div>
+        <label>Tipo do Evento:</label>
+        <input name="tipoEvento" class="form-control-sm" type="text">
+    </div>
+
+    <div>
+        <label>Data de início:</label>
+        <input name="dataIni" type="date" class="form-control-sm">
+    </div>
+
+    <div>
+        <label>Data de encerramento:</label>
+        <input name="dataFin" type="date" class="form-control-sm">
+    </div>
+
+    <div>
+        <label>Duração (horas):</label>
+        <input name="horasDura" class="form-control-sm" type="time">
+    </div>
+
+    <div>
+        <label>Local:</label>
+        <input name="local" class="form-control-sm" type="text">
+    </div>
+
+    <div>
+        <label>Quantidade de Participantes:</label>
+        <input name="quantPart" class="form-control-sm" type="number">
+    </div>
+
+    <div>
+        <label>Vagas:</label>
+        <input name="vagas" class="form-control-sm" type="number">
+    </div>
+
+    <div>
+        <label>Organizador Responsável:</label>
+        <input name="organResp" class="form-control-sm" type="text">
+    </div>
+    <div>
+
+
+    <button class="form-control-sm">Enviar</button>
+</form>
+{% endblock content %}
