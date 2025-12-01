@@ -16,8 +16,11 @@
   <body>
       
   {% block content %}
+
   <div class="login-container">
-    <h2>Login</h2>
+    <img src="{% static 'imagens/temple.png' %}" class="logo" alt="temple">
+
+    <h2 class= "login_txt">Login</h2>
     <form method="post">
       {% csrf_token %}
       <div id="email-field">
@@ -26,9 +29,10 @@
       <div id="password-field">
         <input type="password" name="senha" id="senha" placeholder="Senha:" required>
       </div id="login-button">
-      <button type="submit">Entrar</button>
+      
+      <button type="submit" class="btn_ent">Entrar</button>
     </form>
-    <ul class="navbar-nav">
+    <ul class="btn_extras">
       <li class="nav-item active">
         <a class="nav-link" href="{% url 'cadastro' %}" target="_self">Não possuo cadastro</a>
       </li>

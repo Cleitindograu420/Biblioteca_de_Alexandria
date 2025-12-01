@@ -46,6 +46,21 @@ body {
 }
 
 /*----------------------------------------------------------------------------------*/
+.logo {
+    width: 200px;
+    height: auto;
+    border-radius: 10px;
+    filter: drop-shadow(0 0 10px black);
+    transform: translateX(30px);
+}
+/*----------------------------------------------------------------------------------*/
+
+.login_txt {
+    color: #ffffff;
+    margin-bottom: 20px;
+    text-align: center;
+}
+/*----------------------------------------------------------------------------------*/
 
 a {
     color: #ffffff;  
@@ -115,11 +130,14 @@ h2 {
 }
 
 /* estilo para botão */
-.btn {
-  padding: 8px 14px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
+.btn_ent {
+    padding: 8px 14px;
+    border-radius: 6px;
+    text-align: center;
+    display: block;      /* permite mover com margin-left */
+    margin: 0 auto;
+    border: none;
+    cursor: pointer;
 }
 
 input {
@@ -133,6 +151,7 @@ button {
     padding: 7px 15px;
     background-color: #006477;
     border: none;
+    
     border-radius: 4px;
     cursor: pointer;
     color: #ffffff;
@@ -143,7 +162,8 @@ button:hover {
 }
 
 
-ul {
+.btn_extras {
     list-style: none;
+    text-align: center;
     padding-left: 0; /* remove o recuo padrão */
 }
