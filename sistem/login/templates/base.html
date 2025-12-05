@@ -1,47 +1,30 @@
 <!DOCTYPE html>
 {% load static %}
-
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" href="{% static 'Imagens/agenda.png' %}">
-    <title>
-      {% block title %}
-        Bibl alexandria
-      {% endblock %}
-    </title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"  rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'Css/style_base.css' %}">
+    <title>{% block title %}Bibl alexandria{% endblock %}</title>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="{% url 'home_page' %}">Bibl alex</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-        
-          <li class="nav-item active">
-            <a class="nav-link" href={% url 'edit_user' %}>Perfil</a>
-          </li>
-          <li class="nav-item active">
-            <a class="nav-link" href={% url 'logout' %}>Sair</a>
-          </li>
+    <header class="topbar" role="banner">
+      <div class="brand">Bibl alex</div>
+      <nav aria-label="Navegação principal">
+        <ul class="nav">
+          <li><a href="logout" role="button">Perfil</a></li>
+          <li><a href="#login" role="button">Login</a></li>
+          <li><a href="#eventos" role="button">Eventos</a></li>
         </ul>
-      </div>
-    </nav>
-
-    <div class="container" s = 40px>
-      {% block content %} 
-        <section class="botoes-principais">
-          <div class="botao">
-            <a href="{% url 'list_inscricao' %}">
-              <img src="{% static 'Imagens/temple.png' %}" alt="templo grego" title="Eventos inscritos">
-            </a>
-          </div>
-      </section>
-      {% endblock %}
-    </div>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" ></script>
+      </nav>
+    </header>
   </body>
+
+   
+
+    <div class="container">
+      {% block content %}{% endblock %}
+    </div>
+
+    
 </html>
