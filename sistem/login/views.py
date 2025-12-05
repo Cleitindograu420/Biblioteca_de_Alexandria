@@ -266,7 +266,7 @@ def cadastro_eventos(request):
 
         novo_evento = Evento(
             nome=request.POST.get("nome"),
-            tipoEvento=request.POST.get("tipoEvento"),  # cuidado: seu HTML usa 'tipoEvento', não 'tipoE'
+            tipoEvento=request.POST.get("tipoEvento"),  
             dataIni=dia_inicio,
             dataFin=dia_fim,
             horasDura=request.POST.get("horasDura"),

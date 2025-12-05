@@ -1,5 +1,7 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
+<link rel="stylesheet" href="{% static 'Css/style_insc_eventos.css' %}">
 <div class="container">
   <h2>Inscrição no Evento</h2>
 
@@ -10,7 +12,7 @@
                 <div class="eventos-itens">
                     <h3>{{ evento.nome }} - {{ evento.tipoevento }}</h3>
                     <p><strong>Local:</strong> {{ evento.local }}</p> 
-                    <p><strong>Data:</strong> {{ evento.dataI }} até {{ evento.dataF }}</p> 
+                    <p><strong>Data:</strong> {{ evento.dataIni|date:"d/m" }} até {{ evento.dataFin|date:"d/m" }}</p> 
                     <p><strong>Horário:</strong> {{ evento.horarioI }}h às {{ evento.horarioF }}h</p> 
                     
                     {% if evento.id_evento in inscritos %}
