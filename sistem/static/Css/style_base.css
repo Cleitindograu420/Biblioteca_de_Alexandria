@@ -1,0 +1,51 @@
+body {
+    margin: 0;
+    padding-top: 55px; /* mesma altura da navbar */
+    background-color: #003840
+}
+
+/* Topbar fixa no topo */
+.topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 55px;
+
+    background-color: #254d70; /* cor parecida com a da imagem */
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    z-index: 1000;
+}
+
+/* Nome da marca */
+.topbar .brand {
+    font-size: 1.3rem;
+    color: white;
+    font-weight: 600;
+    margin-right: 30px;
+}
+
+/* NAV + itens */
+.topbar nav .nav {
+    list-style: none;
+    display: flex;
+    gap: 25px;
+    margin: 0;
+    padding: 0;
+}
+
+/* Links */
+.topbar .nav li a {
+    text-decoration: none;
+    color: #d1d1d1;
+    font-size: 1rem;
+    transition: 0.2s;
+}
+
+.topbar .nav li a:hover {
+    color: white;
+}

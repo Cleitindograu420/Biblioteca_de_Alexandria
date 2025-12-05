@@ -20,7 +20,7 @@ def base(request):
     if usuario.tipo == "organizador":
         return render(request, "base_org.html", {"usuario": usuario})
     else:
-        return render(request, "base.html", {"usuario": usuario})
+        return render(request, "home.html", {"usuario": usuario})
 
 
 #Funcoes para usuarios--------------------------------------------------------------------------------------------------
