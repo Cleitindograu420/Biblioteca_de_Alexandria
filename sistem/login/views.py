@@ -12,7 +12,7 @@ def base(request):
     usuario_id = request.session.get("usuario_id")
 
     if not usuario_id:
-        #teste em front
+        #teste em front 
         return redirect("login")
     
     usuario = get_object_or_404(Usuario, id_usuario=usuario_id)
@@ -78,6 +78,10 @@ def cadastro_usuario(request):
             message="O telefone deve estar no formato (XX) XXXXX-XXXX ou XX XXXXX-XXXX."
         )
 
+        senha_valida = RegexValidator(
+            regex=r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$',
+            message="A senha deve ter no mínimo 8 caracteres, incluindo letras,números e caracteres especiais."
+        )
         
         #valida o email com a funcao EmailValidator nativa do django
         email_valido = EmailValidator(message="O email fornecido é inválido.")
