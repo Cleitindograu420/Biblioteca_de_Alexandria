@@ -269,6 +269,8 @@ def cadastro_eventos(request):
             tipoEvento=request.POST.get("tipoEvento"),  
             dataIni=dia_inicio,
             dataFin=dia_fim,
+            horasIni=request.POST.get("horasIni"),
+            horasFin=request.POST.get("horasFin"),
             horasDura=request.POST.get("horasDura"),
             local=request.POST.get("local"),
             quantPart=request.POST.get("quantPart"),
@@ -346,8 +348,8 @@ def editar_evento(request, pk):
         tipoevento = request.POST.get("tipo_evento")
         dataI_str = request.POST.get("dataI")
         dataF_str = request.POST.get("dataF")
-        horarioI_str = request.POST.get("horarioI")
-        horarioF_str = request.POST.get("horarioF")
+        horarioIni_str = request.POST.get("horarioI")
+        horarioFin_str = request.POST.get("horarioF")
         local = request.POST.get("local")
         quantPart_str = request.POST.get("quantPart")
         organResp = request.POST.get("organResp")
@@ -357,13 +359,13 @@ def editar_evento(request, pk):
         
         # Verifica se os campos, se preenchidos coretamenete, sao salvos
         try:
-            if nome and tipoevento and dataI_str and dataF_str and horarioI_str and horarioF_str and local and quantPart_str and organResp and vagas_str and assinatura and horasinp:
+            if nome and tipoevento and dataI_str and dataF_str and horarioIni_str and horarioFin_str and local and quantPart_str and organResp and vagas_str and assinatura and horasinp:
                 dataI = int(dataI_str)
                 dataF = int(dataF_str)
                 vagas = int(vagas_str)
                 quantPart = int(quantPart_str)
-                horarioI = int(horarioI_str)
-                horarioF = int(horarioF_str)
+                horarioI = int(horarioIni_str)
+                horarioF = int(horarioFin_str)
 
                 if quantPart == 0:
                     return HttpResponse("Um evento não pode ter 0 participantes.")
@@ -387,8 +389,8 @@ def editar_evento(request, pk):
                 evento.tipoevento = tipoevento
                 evento.dataI = dataI
                 evento.dataF = dataF
-                evento.horarioI = horarioI
-                evento.horarioF = horarioF
+                evento.horarioIni = horarioIni_str
+                evento.horarioFin = horarioFin_str
                 evento.local = local
                 evento.quantPart = quantPart
                 evento.organResp = organResp
