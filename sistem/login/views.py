@@ -273,7 +273,6 @@ def cadastro_eventos(request):
             horasFin=request.POST.get("horasFin"),
             horasDura=request.POST.get("horasDura"),
             local=request.POST.get("local"),
-            quantPart=request.POST.get("quantPart"),
             organizador=request.POST.get("organResp"),
             vagas=request.POST.get("vagas"),
         )
