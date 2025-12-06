@@ -10,7 +10,13 @@
 
     <div>
         <label>Nome do Evento:</label>
-        <input name="nome" class="form-control-sm" type="text">
+        <input list='opcaoes' name="nome" class="form-control-sm" type="text">
+        <datalist id="opcoes">
+            <option value="Palestra">
+            <option value="Workshop">
+            <option value="Ensino presencial">
+            <option value="Ensino a distancia">
+        </datalist>
     </div>
 
     <div>
