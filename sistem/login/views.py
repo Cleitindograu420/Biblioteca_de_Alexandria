@@ -322,7 +322,8 @@ def deletar_evento(request, pk):
     evento = get_object_or_404(Evento, pk = pk)
     
     evento.delete()
-    return redirect("even")
+
+    return redirect("eventos")
 
 def editar_evento(request, pk):
     usuario_id = request.session.get("usuario_id")
