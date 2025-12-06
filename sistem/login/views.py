@@ -301,8 +301,8 @@ def cadastro_eventos(request):
         if quantPart <= 0 or vagas <= 0:
             return HttpResponse("A quantidade máxima de participantes e o número de vagas devem ser maiores que zero.")
 
-        if vagas > quantPart:
-            return HttpResponse("O número de vagas não pode ser maior que a quantidade máxima de participantes (quantPart).")
+        if vagas < quantPart:
+            return HttpResponse("O número de vagas deve ser maior que a quantidade máxima de participantes (quantPart).")
 
         try:
             with transaction.atomic():
@@ -371,7 +371,8 @@ def deletar_evento(request, pk):
     evento = get_object_or_404(Evento, pk = pk)
     
     evento.delete()
-    return redirect("even")
+
+    return redirect("eventos")
 
 def editar_evento(request, pk):
     usuario_id = request.session.get("usuario_id")
@@ -498,6 +499,7 @@ def inscricao_evento(request, evento_id):
                 
                 Inscrito.objects.create(usuario_id=usuario, evento_id=evento)
                 evento.vagas -= 1
+                evento.quantPart += 1
                 evento.save()
         except Evento.DoesNotExist:
             return HttpResponse("Evento não encontrado")
