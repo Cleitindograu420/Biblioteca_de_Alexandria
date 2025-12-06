@@ -247,8 +247,9 @@ def todos_eventos(request):
     return render(request, "templates_org/list_eventos_org.html", eventos)
 
 def cadastro_eventos(request):
-    from datetime import datetime
+    from datetime import datetime, date
     
+    #Verificação para data e organizador#
     if request.method == "POST":
         dia_inicio_date = request.POST.get("dataIni")
         dia_fim_date = request.POST.get("dataFin")
@@ -260,24 +261,72 @@ def cadastro_eventos(request):
             dia_inicio = datetime.strptime(dia_inicio_date, "%Y-%m-%d").date()
             dia_fim = datetime.strptime(dia_fim_date, "%Y-%m-%d").date()
         except ValueError:
-            return HttpResponse("O campo data de início e final devem ser uma data válida")
+            return HttpResponse("O campo data de início e final devem ser uma data válida, formatada como AAAA-MM-DD.")
+        
+        if dia_inicio < date.today():
+            return HttpResponse("A data de início não pode ser uma data passada.")
+        
+        if dia_fim < dia_inicio:
+            return HttpResponse("A data de fim não pode ser anterior à data de início.")
 
-        # (as demais validações e criação do evento...)
 
-        novo_evento = Evento(
-            nome=request.POST.get("nome"),
-            tipoEvento=request.POST.get("tipoEvento"),  
-            dataIni=dia_inicio,
-            dataFin=dia_fim,
-            horasIni=request.POST.get("horasIni"),
-            horasFin=request.POST.get("horasFin"),
-            horasDura=request.POST.get("horasDura"),
-            local=request.POST.get("local"),
-            quantPart=request.POST.get("quantPart"),
-            organizador=request.POST.get("organResp"),
-            vagas=request.POST.get("vagas"),
-        )
-        novo_evento.save()
+        organizador_input = request.POST.get("organResp")
+        if not organizador_input:
+            return HttpResponse("O campo organizador é obrigatório.")
+
+        organizador_user = None
+        # tenta interpretar como id numérico
+        try:
+            organizador_user = Usuario.objects.get(id_usuario=int(organizador_input))
+        except (ValueError, Usuario.DoesNotExist):
+            # tenta por email
+            try:
+                organizador_user = Usuario.objects.get(email=organizador_input)
+            except Usuario.DoesNotExist:
+                # tenta por nome completo
+                try:
+                    organizador_user = Usuario.objects.get(nome=organizador_input)
+                except Usuario.DoesNotExist:
+                    return HttpResponse("Organizador não encontrado. Informe um usuário válido.")
+
+        if organizador_user.tipo != "organizador":
+            return HttpResponse("O usuário informado não é um organizador.")
+
+        try:
+            quantPart = int(request.POST.get("quantPart") or 0)
+            vagas = int(request.POST.get("vagas") or 0)
+        except ValueError:
+            return HttpResponse("Os campos 'quantPart' e 'vagas' devem ser números inteiros.")
+
+        if quantPart <= 0 or vagas <= 0:
+            return HttpResponse("A quantidade máxima de participantes e o número de vagas devem ser maiores que zero.")
+
+        if vagas > quantPart:
+            return HttpResponse("O número de vagas não pode ser maior que a quantidade máxima de participantes (quantPart).")
+
+        try:
+            with transaction.atomic():
+                novo_evento = Evento(
+                    nome=request.POST.get("nome"),
+                    tipoEvento=request.POST.get("tipoEvento"),  
+                    dataIni=dia_inicio,
+                    dataFin=dia_fim,
+                    horasIni=request.POST.get("horasIni"),
+                    horasFin=request.POST.get("horasFin"),
+                    horasDura=request.POST.get("horasDura"),
+                    local=request.POST.get("local"),
+                    quantPart=quantPart,
+                    organizador=organizador_user.nome,
+                    vagas=vagas,
+                )
+                novo_evento.save()
+
+                # caso existam inscrições prévias (improvável na criação), impede salvar se exceder vagas
+                inscritos_count = Inscrito.objects.filter(evento_id=novo_evento).count()
+                if inscritos_count > vagas:
+                    raise ValueError("Já existem inscritos suficientes para exceder as vagas informadas.")
+        except:
+            return HttpResponse(f"Erro ao criar evento: {Exception}")
 
         return redirect("eventos")
 
@@ -436,18 +485,23 @@ def inscricao_evento(request, evento_id):
     
     if request.method == "POST":
         usuario = get_object_or_404(Usuario, id_usuario = usuario_id)
-        evento = get_object_or_404(Evento, id_evento = evento_id)
-    
-        if Inscrito.objects.filter(usuario_id = usuario, evento_id = evento).exists():
-            return HttpResponse("Você já está inscrito neste evento")
-     
-        if evento.vagas <= 0:
-            return HttpResponse("Não há mais vagas disponíveis")
-    
-        Inscrito.objects.create(usuario_id = usuario, evento_id = evento)
+        try:
+            with transaction.atomic():
+                # bloqueia a linha do evento para evitar overbooking concurrente
+                evento = Evento.objects.select_for_update().get(id_evento=evento_id)
 
-        evento.vagas -= 1
-        evento.save()
+                if Inscrito.objects.filter(usuario_id=usuario, evento_id=evento).exists():
+                    return HttpResponse("Você já está inscrito neste evento")
+                
+                if evento.vagas <= 0:
+                    return HttpResponse("Não há mais vagas disponíveis")
+                
+                Inscrito.objects.create(usuario_id=usuario, evento_id=evento)
+                evento.vagas -= 1
+                evento.save()
+        except Evento.DoesNotExist:
+            return HttpResponse("Evento não encontrado")
+
         
         return redirect("list_inscricao")
         

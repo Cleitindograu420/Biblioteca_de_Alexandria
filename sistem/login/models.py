@@ -21,7 +21,7 @@ class Evento (models.Model):
     horasDura = models.TimeField(validators=[MinValueValidator(1)],null=True, blank=True)
     local = models.TextField(max_length=200)
     quantPart = models.IntegerField(validators=[MinValueValidator(1)])
-    organizador = models.TextField(max_length=200)
+    organizador = models.TextField(max_length=200, null=False, blank=False)
     vagas = models.IntegerField(validators=[MinValueValidator(1)], null=False)
     certificado = models.BooleanField(default=False)
 class Inscrito(models.Model):
