@@ -12,7 +12,11 @@ def base(request):
     usuario_id = request.session.get("usuario_id")
 
     if not usuario_id:
+<<<<<<< HEAD
         #cu
+=======
+        #teste em front
+>>>>>>> 267c6f73e58d67a3a809a64032a3da27ee38bdf4
         return redirect("login")
     
     usuario = get_object_or_404(Usuario, id_usuario=usuario_id)
