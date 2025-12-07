@@ -609,5 +609,5 @@ def logs(request):
     logs = {
         'logs' : Log.objects.all().order_by('-data_hora')
     }
-    
+    # Renderiza a página com todos os logs
     return render(request, "templates_org/logs_org.html", logs)
