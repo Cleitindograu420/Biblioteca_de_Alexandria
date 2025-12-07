@@ -101,7 +101,7 @@ def cadastro_usuario(request):
                 return HttpResponse("Email já cadastrado.")
 
             # ------ CRIA USUÁRIO ------
-            Usuario.objects.create(
+            novo_usuario = Usuario.objects.create(
                 nome=nome,
                 telefone=telefone,
                 instEnsino=instEnsino,
@@ -112,7 +112,7 @@ def cadastro_usuario(request):
             )
 
             Log.objects.create(
-                usuario_id=usuario_id,
+                usuario_id=novo_usuario,
                 acao=f"Novo usuário cadastrado: {nome} ({email})"
             )
             return redirect('login')
@@ -121,7 +121,6 @@ def cadastro_usuario(request):
             return HttpResponse(f"Erro: {e}")
 
     return render(request, 'funcoes.html', {'usuarios': Usuario.objects.all()})
-
 
 def ver_usuario(request):
     usuario_id = request.session.get('usuario_id')
@@ -298,11 +297,13 @@ def cadastro_eventos(request):
         )
         
 
-        Log.objects.create(
-            id_evento=novo_evento.id_evento,
-            acao=f"Novo evento cadastrado: {novo_evento.nome}"
-        )
         novo_evento.save()
+
+        Log.objects.create(
+            id_evento=novo_evento,
+            acao=f"Novo evento cadastrado: {novo_evento.nome}"
+            )
+        
 
         return redirect("eventos")
 
@@ -346,13 +347,14 @@ def deletar_evento(request, pk):
     #pega o evento com o id passado na url e o deleta
     evento = get_object_or_404(Evento, pk = pk)
     
-    Log.objects.create(
-        id_evento=evento.id_evento,
-        usuario_id=usuario,
-        acao=f"Evento deletado: {evento.nome}"
-    )
-    
-    evento.delete()
+    # garante atomicidade entre criação do log e exclusão do evento
+    with transaction.atomic():
+        Log.objects.create(
+            id_evento=evento,
+            acao=f"Evento deletado: {evento.nome}"
+        )
+
+        evento.delete()
 
     return redirect("eventos")
 
@@ -435,11 +437,13 @@ def editar_evento(request, pk):
                 evento.vagas = vagas
                 evento.save()
 
-
-                Log.objects.create(
-                    id_evento=evento.id_evento,
-                    acao=f"Evento editado: {evento.nome}"
-                )
+                # garante atomicidade e usa instâncias em vez de IDs
+                with transaction.atomic():
+                    Log.objects.create(
+                        id_evento=evento,
+                        usuario_id=usuario,
+                        acao=f"Evento editado: {evento.nome}"
+                    )
 
                 return redirect("even")
 
@@ -491,12 +495,14 @@ def inscricao_evento(request, evento_id):
 
         evento.vagas -= 1
         evento.save()
-        
-        Log.objects.create(
-            id_evento=evento.id_evento,
-            usuario_id=usuario,
-            acao=f"Usuário {usuario.nome} inscrito no evento {evento.nome}"
-        )
+
+        # garante atomicidade e usa instâncias em vez de IDs
+        with transaction.atomic():
+            Log.objects.create(
+                id_evento=evento,
+                usuario_id=usuario,
+                acao=f"Usuário {usuario.nome} inscrito no evento {evento.nome}"
+            )
 
         return redirect("list_inscricao")
         
@@ -565,7 +571,7 @@ def emitir_certificados(request, evento_id):
                     horas = inscricao.evento_id.horasDura
                 )
                 Log.objects.create(
-                    id_evento=evento.id_evento,
+                    id_evento=evento,
                     usuario_id=inscricao.usuario_id,
                     acao=f"Certificado emitido para o usuário {inscricao.usuario_id.nome} no evento {evento.nome}"
                 )
