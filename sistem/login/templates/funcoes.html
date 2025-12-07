@@ -24,7 +24,7 @@
                 </div>
 
                 <div id="senhaDiv" style="display: block;">
-                    <input name= "senha" class="form-control-sm" type="text"placeholder="Senha:" required>
+                    <input name= "senha" class="form-control-sm" type="password"placeholder="Senha:" required>
                 </div>
                 
                 <!--token para organizador-->
@@ -44,22 +44,25 @@
                     // Exibe o campo de senha especial somente se "organizador" for selecionado
                     const radios = document.querySelectorAll('input[name="tipo"]');
                     const tokenDiv = document.getElementById('tokenAcessoDiv');
+                    const tokenInput = tokenDiv.querySelector('input');
+
                     radios.forEach(radio => {
                         radio.addEventListener('change', function() {
                             if (this.value === 'organizador') {
                                 tokenDiv.style.display = 'block';
+                                tokenInput.required = true;   // ATIVAR
                             } else {
                                 tokenDiv.style.display = 'none';
-                                
-                                
+                                tokenInput.required = false;  // DESATIVAR
                             }
                         });
                     });
+
                 </script>
             </div>
             <div class="div-button">
-                <button class="form-control-sm">Enviar</button>
+                <button type="submit" class="btn-enviar">Enviar</button>
             </div>
-            </form>
+        </form>
         </div>
 {% endblock content %}

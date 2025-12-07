@@ -38,19 +38,25 @@
     align-items: center;  
 }
 
-.div-button{
+.div-button {
     display: flex;
     justify-content: center;
-    align-items: center;
     margin-top: 20px;
 }
-.div-button button {
-    
-    width: 80px;
-    height: 40px;
-    font-size: 15px;
-    border: 3px solid #006477;;
+
+.btn-enviar {
+    width: 120px;
+    height: 45px;
+    background-color: #006477;
+    border: none;
+    color: #ffffff;
+    font-size: 18px;
     border-radius: 10px;
+    cursor: pointer;
+}
+
+.btn-enviar:hover {
+    background-color: #004f5e;
 }
 
 /*----------------------------------------------------------------------------------*/
