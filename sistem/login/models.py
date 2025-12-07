@@ -41,5 +41,5 @@ class Log(models.Model):
     id_log = models.AutoField(primary_key=True, unique=True)
     id_evento = models.ForeignKey(Evento, on_delete=models.CASCADE)
     usuario_id = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    timestamp = models.DateTimeField(auto_now_add=True)
+    horaAcao = models.DateTimeField(auto_now_add=True)
     acao = models.CharField(max_length=300)
