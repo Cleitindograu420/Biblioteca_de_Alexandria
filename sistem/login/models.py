@@ -16,9 +16,10 @@ class Evento (models.Model):
     tipoEvento = models.TextField(max_length=200)
     dataIni = models.DateField()
     dataFin = models.DateField()
-    horasIni = models.TimeField(validators=[MinValueValidator(1)], null=True, blank=True)
-    horasFin = models.TimeField(validators=[MinValueValidator(1)], null=True, blank=True)
-    horasDura = models.IntegerField(validators=[MinValueValidator(0)], null=True, blank=True)
+    horasIni = models.TimeField(null=True, blank=True)
+    horasFin = models.TimeField(null=True, blank=True)
+    horasDura = models.DurationField()
+
     local = models.TextField(max_length=200)
     quantPart = models.IntegerField(validators=[MinValueValidator(0)], null=False, blank=False, default=0)
     organizador = models.TextField(max_length=200, null=False, blank=False)
