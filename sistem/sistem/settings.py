@@ -96,10 +96,13 @@ DATABASES = {
         "HOST": tmpPostgres.hostname,
         "PORT": tmpPostgres.port or 5432,
         "OPTIONS": {
-            "sslmode": "require",   # obrigatório no Neon
+            "sslmode": "require",
+            "options": f"endpoint={tmpPostgres.hostname.split('.')[0]}"
         },
     }
 }
+
+
 
 
 
