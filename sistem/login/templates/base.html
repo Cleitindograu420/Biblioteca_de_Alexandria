@@ -19,35 +19,14 @@
           <li><a href="{% url 'inscricao_evento_disp' %}" role="button">Eventos</a></li>
           <li><a href="{% url 'list_inscricao' %}" role="button">Meus Eventos</a></li>
           <li><a href="{% url 'logout' %}" role="button">Sair</a></li>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="base.html">Bibl alex</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-        
-          <li class="nav-item active">
-             <a class="nav-link" href="{% url 'cadastro' %}" target="_self">Cadastro</a><br>
-          </li>
-        
-          <li class="nav-item active">
-            
-          </li>
-        
-          <li class="nav-item active">
-            <a class="nav-link" href={% url 'cadastro_evento' %}>Eventos</a>
-          </li>
         </ul>
       </nav>
     </header>
 
   </body>
 
-   
-
     <div class="container">
       {% block content %}
-      {% block content %} 
-        <a class="nav-link" href="{% url 'login' %}" target="_self">Login</a><br>
       {% endblock %}
     </div>
 </html>

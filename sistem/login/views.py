@@ -59,8 +59,9 @@ def cadastro_usuario(request):
         senha = request.POST.get('senha')
         email = request.POST.get('email')
         tipo = request.POST.get('tipo', '').lower()
+        senha_tipo = request.POST.get('senha_acesso')
 
-        token_acesso = request.POST.get("token_acesso") #token para organizador
+        token_acesso = request.POST.get("token_acesso")
 
         # token pré-definido
         TOKEN_CORRETO = "ORG123"
@@ -111,13 +112,13 @@ def cadastro_usuario(request):
                 instEnsino=instEnsino,
                 senha=senha_valida,
                 email=email,
-                tipo=tipo
+                tipo=senha_tipo
             )
             #redireciona o usuario para a tela de login
             return redirect('login')
         
         except ValidationError:
-            return HttpResponse('Erros')
+            return HttpResponse('Telefone inválidos. Por favor, insira um telefone válido.')
     
     return render(request, 'funcoes.html', {'usuarios': Usuario.objects.all()})
 
@@ -252,7 +253,7 @@ def todos_eventos(request):
     return render(request, "templates_org/list_eventos_org.html", eventos)
 
 def cadastro_eventos(request):
-    from datetime import datetime, time, timedelta
+    from datetime import datetime
     
     if request.method == "POST":
         dia_inicio_date = request.POST.get("dataIni")
@@ -267,42 +268,16 @@ def cadastro_eventos(request):
         except ValueError:
             return HttpResponse("O campo data de início e final devem ser uma data válida")
 
-        # ------------------------------
-        # TRATANDO HORAS INICIO / FIM
-        # ------------------------------
-        horasIni_str = request.POST.get("horasIni")   # ex: "08:00"
-        horasFin_str = request.POST.get("horasFin")   # ex: "10:00"
+        # (as demais validações e criação do evento...)
 
-        try:
-            horasIni = datetime.strptime(horasIni_str, "%H:%M").time()
-            horasFin = datetime.strptime(horasFin_str, "%H:%M").time()
-        except:
-            return HttpResponse("Horário inicial e final devem estar no formato HH:MM")
-
-        # ------------------------------
-        # TRATANDO A DURAÇÃO (HORASDURA)
-        # ------------------------------
-        horas_Dura_str = request.POST.get("horasDura")   # ex: "2"
-
-        try:
-            horas_int = int(horas_Dura_str)
-        except:
-            return HttpResponse("A duração deve ser um número inteiro representando horas.")
-
-        # converte int -> time "HH:00:00"
-        horasDura = time(hour=horas_int, minute=0, second=0)
-
-        # ------------------------------
-        # CRIA O EVENTO
-        # ------------------------------
         novo_evento = Evento(
             nome=request.POST.get("nome"),
             tipoEvento=request.POST.get("tipoEvento"),  
             dataIni=dia_inicio,
             dataFin=dia_fim,
-            horasIni=horasIni,
-            horasFin=horasFin,
-            horasDura=horasDura,
+            horasIni=request.POST.get("horasIni"),
+            horasFin=request.POST.get("horasFin"),
+            horasDura=request.POST.get("horasDura"),
             local=request.POST.get("local"),
             organizador=request.POST.get("organResp"),
             vagas=request.POST.get("vagas"),
@@ -311,6 +286,7 @@ def cadastro_eventos(request):
 
         return redirect("eventos")
 
+    # Se for GET, apenas exibe o formulário
     return render(request, 'templates_org/cad_eventos_org.html')
 
 def verificacao_org(request):
