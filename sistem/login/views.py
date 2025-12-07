@@ -1,6 +1,6 @@
 #todos os imports necessarios
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
-from .models import Usuario,Evento, Inscrito, Certificado
+from .models import Usuario,Evento, Inscrito, Certificado, Log
 from django.core.validators import RegexValidator, EmailValidator
 from django.core.exceptions import ValidationError
 from django.contrib import messages
@@ -114,9 +114,17 @@ def cadastro_usuario(request):
                 email=email,
                 tipo=senha_tipo
             )
+
+            Log.objects.create(
+                id_evento=None,
+                usuario_id=None,
+                acao=f"Novo usuário cadastrado: {nome} ({email})"
+            )
             #redireciona o usuario para a tela de login
             return redirect('login')
-        
+            
+            
+
         except ValidationError:
             return HttpResponse('Telefone inválidos. Por favor, insira um telefone válido.')
     
@@ -282,6 +290,11 @@ def cadastro_eventos(request):
             organizador=request.POST.get("organResp"),
             vagas=request.POST.get("vagas"),
         )
+
+        Log.objects.create(
+            id_evento=novo_evento.id_evento,
+            acao=f"Novo evento cadastrado: {novo_evento.nome}"
+        )
         novo_evento.save()
 
         return redirect("eventos")
@@ -325,6 +338,12 @@ def deletar_evento(request, pk):
     
     #pega o evento com o id passado na url e o deleta
     evento = get_object_or_404(Evento, pk = pk)
+    
+    Log.objects.create(
+        id_evento=evento.id_evento,
+        usuario_id=usuario,
+        acao=f"Evento deletado: {evento.nome}"
+    )
     
     evento.delete()
 
@@ -403,6 +422,11 @@ def editar_evento(request, pk):
                 evento.vagas = vagas
                 evento.save()
 
+                Log.objects.create(
+                    id_evento=evento.id_evento,
+                    acao=f"Evento editado: {evento.nome}"
+                )
+
                 return redirect("even")
 
         #verifica se algum campo nao foi preenchido
@@ -455,6 +479,12 @@ def inscricao_evento(request, evento_id):
         evento.vagas -= 1
         evento.save()
         
+        Log.objects.create(
+            id_evento=evento.id_evento,
+            usuario_id=usuario,
+            acao=f"Usuário {usuario.nome} inscrito no evento {evento.nome}"
+        )
+
         return redirect("list_inscricao")
         
 
@@ -498,6 +528,10 @@ def ver_certificados(request):
         'eventos' : Evento.objects.filter(emitido = False)
     }
     
+    Log.objects.create(
+        acao="Visualização da lista de certificados pendentes de emissão"
+    )
+
     return render(request, "usuarios/certificados.html", eventos)
 
 def emitir_certificados(request, evento_id):
@@ -516,6 +550,11 @@ def emitir_certificados(request, evento_id):
                     usuario_id = inscricao.usuario_id,
                     evento_id = inscricao.evento_id,
                     horas = inscricao.evento_id.horasDura
+                )
+                Log.objects.create(
+                    id_evento=evento.id_evento,
+                    usuario_id=inscricao.usuario_id,
+                    acao=f"Certificado emitido para o usuário {inscricao.usuario_id.nome} no evento {evento.nome}"
                 )
 
             # Remove inscritos após emitir

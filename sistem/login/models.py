@@ -36,7 +36,6 @@ class Certificado(models.Model):
     evento_id = models.ForeignKey(Evento, on_delete= models.CASCADE, related_name="certificados")
     dataEmissao = models.DateField(default= timezone.now)
     horas = models.IntegerField(validators=[MinValueValidator(0)], null=True, blank=True)
-
 class Log(models.Model):
     id_log = models.AutoField(primary_key=True, unique=True)
     id_evento = models.ForeignKey(Evento, on_delete=models.CASCADE)
