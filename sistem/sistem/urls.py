@@ -35,5 +35,6 @@ urlpatterns = [
     path('eventos/', views.todos_eventos, name='eventos'),
     path("eventos_disp/", views.eventos_disponiveis, name="inscricao_evento_disp"),
     path('eventos/inscricao/<int:evento_id>/', views.inscricao_evento, name='inscricao_evento'),
+    path('eventos/emitir_certificado/<int:evento_id>/', views.emitir_certificado, name='emitir_certificado'),
     path("home_inscricao/", views.home_inscricao, name = "list_inscricao"),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
