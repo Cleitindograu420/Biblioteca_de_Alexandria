@@ -52,6 +52,7 @@ def delete_user(request):
         return redirect('login')
 
 def cadastro_usuario(request):
+    usuario_id = request.session.get('usuario_id')
     if request.method == 'POST':
         nome = request.POST.get('nome')
         telefone = request.POST.get('telefone')
@@ -111,8 +112,7 @@ def cadastro_usuario(request):
             )
 
             Log.objects.create(
-                id_evento=None,
-                usuario_id=Usuario.id_usuario,
+                usuario_id=usuario_id,
                 acao=f"Novo usuário cadastrado: {nome} ({email})"
             )
             return redirect('login')
@@ -121,7 +121,6 @@ def cadastro_usuario(request):
             return HttpResponse(f"Erro: {e}")
 
     return render(request, 'funcoes.html', {'usuarios': Usuario.objects.all()})
-
 
 
 def ver_usuario(request):
@@ -588,6 +587,7 @@ def logout(request):
     
     return redirect("login")
 
+
 #Funcoes para logs------------------------------------------------------------------------------------------------------
 
 def logs(request):
@@ -606,8 +606,8 @@ def logs(request):
     if usuario.tipo != "organizador":
         return redirect("inscricao")
     
-    logs = {
-        'logs' : Log.objects.all().order_by('-data_hora')
+    context = {
+        'Logs' : Log.objects.all().order_by('-horaAcao')
     }
     # Renderiza a página com todos os logs
-    return render(request, "templates_org/logs_org.html", logs)
+    return render(request, "templates_org/log.html", context)
