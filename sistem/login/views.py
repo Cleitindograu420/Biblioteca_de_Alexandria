@@ -56,23 +56,16 @@ def cadastro_usuario(request):
         nome = request.POST.get('nome')
         telefone = request.POST.get('telefone')
         instEnsino = request.POST.get('instEnsino')
-        senha = request.POST.get('senha')
         email = request.POST.get('email')
         tipo = request.POST.get('tipo', '').lower()
-        senha_org = request.POST.get('senha_org')
 
-        token_acesso = request.POST.get("token_acesso")
+        senha = request.POST.get('senha')
+        token_acesso = request.POST.get('token_acesso')
 
         # token pré-definido
         TOKEN_CORRETO = "ORG123"
-        
-        #Valida se o token de acesso esta correto para organizadores
-        if tipo == "organizador":
-            if token_acesso != TOKEN_CORRETO:
-                messages.error(request, "Token de acesso inválido! Cadastro não autorizado.")
-                return redirect("cadastro")
-            
-        ##valida o telefone com regex
+
+        # VALIDADORES
         telefone_valido = RegexValidator(
             regex=r'^\(?\d{2}\)? ?\d{4,5}-\d{4}$',
             message="O telefone deve estar no formato (XX) XXXXX-XXXX ou XX XXXXX-XXXX."
@@ -80,32 +73,33 @@ def cadastro_usuario(request):
 
         senha_valida = RegexValidator(
             regex=r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$',
-            message="A senha deve ter no mínimo 8 caracteres, incluindo letras,números e caracteres especiais."
+            message="A senha deve ter no mínimo 8 caracteres, incluindo letras, números e caracteres especiais."
         )
-        
-        #valida o email com a funcao EmailValidator nativa do django
+
         email_valido = EmailValidator(message="O email fornecido é inválido.")
 
-        #valida se o telefone e email ja estao cadastrados no banco de dados
         try:
+            # ------ VALIDAÇÕES BÁSICAS ------
             telefone_valido(telefone)
             email_valido(email)
             senha_valida(senha)
 
-            #se o telefone ja estiver cadastrado, retorna uma mensagem de erro
-            if Usuario.objects.filter(telefone = telefone).exists():
-                return HttpResponse('Telefone já cadastrado. Por favor, utilize outro telefone.')
-            
-            #se o email ja estiver cadastrado, retorna uma mensagem de erro
-            try:
-                if Usuario.objects.filter(email=email).exists():
-                    return HttpResponse('Email já cadastrado. Por favor, utilize outro email.')
-            
-            #se o email for invalido, retorna uma mensagem de erro
-            except ValidationError:
-                return HttpResponse('Email inválido. Por favor, insira um email válido.')
-            
-            #se todas as informacoes forem validas, cria um novo usuario no banco de dados
+            # ------ ORGANIZADOR ------
+            if tipo == "organizador":
+                if not token_acesso:
+                    return HttpResponse("Token obrigatório para organizadores.")
+
+                if token_acesso != TOKEN_CORRETO:
+                    return HttpResponse("Token inválido!")
+
+            # ------ BANCO ------
+            if Usuario.objects.filter(telefone=telefone).exists():
+                return HttpResponse("Telefone já cadastrado.")
+
+            if Usuario.objects.filter(email=email).exists():
+                return HttpResponse("Email já cadastrado.")
+
+            # ------ CRIA USUÁRIO ------
             Usuario.objects.create(
                 nome=nome,
                 telefone=telefone,
@@ -113,15 +107,17 @@ def cadastro_usuario(request):
                 senha=senha,
                 email=email,
                 tipo=tipo,
-                senha_org=senha_org
+                token_acesso=token_acesso if tipo == "organizador" else None,
             )
-            #redireciona o usuario para a tela de login
+
             return redirect('login')
-        
-        except ValidationError:
-            return HttpResponse('Telefone inválidos. Por favor, insira um telefone válido.')
-    
-    return render(request, 'funcoes.html', {'usuarios': Usuario.objects.all()})
+
+        except ValidationError as e:
+            return HttpResponse(f"Erro: {e}")
+
+    return render(request, 'funcoes.html')
+
+
 
 def ver_usuario(request):
     usuario_id = request.session.get('usuario_id')
@@ -139,7 +135,7 @@ def ver_usuario(request):
     if usuario.tipo != 'organizador':
         return redirect('inscricao_eventos')
     
-    usuarios = { 'usuarios': Usuario.objects.all(), }
+    usuario = { 'usuarios': Usuario.objects.all(), }
 
     return render(request, "templates_org/usuarios_org.html", {'usuarios': Usuario.objects.all()}) 
 

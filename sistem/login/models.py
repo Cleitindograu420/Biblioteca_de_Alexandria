@@ -9,6 +9,7 @@ class Usuario(models.Model):
     instEnsino = models.TextField(max_length=100, null= True)
     senha = models.CharField(max_length=200, null=False)
     email = models.EmailField(max_length=254, unique=True)
+    token_acesso = models.CharField(max_length=255, blank=True, null=True)
     tipo = models.CharField(max_length=50, choices=[("estudante", "Estudante"), ("professor", "Professor"), ("organizador", "Organizador")], default= "Estudante")
 class Evento (models.Model):
     id_evento = models.AutoField(primary_key=True, unique=True)

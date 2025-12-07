@@ -29,11 +29,9 @@
             <label for="Senha">Senha:</label>
             <input name= "senha" class="form-control-sm" type="text">
         </div>
-        <!--Senha para organizador-->
-        <div id="senhaAcessoDiv" style="display: none;">
-            <label for="Senha">Senha de acesso:</label>
-            <input name="senha" class="form-control-sm" type="text">
-        </div>
+        
+    
+        <!--token para organizador-->
         <div id="tokenAcessoDiv" style="display: none;">
             <label for="token_acesso">Token de acesso:</label>
             <input name="token_acesso" class="form-control-sm" type="text">
@@ -51,18 +49,12 @@
         <script>
             // Exibe o campo de senha especial somente se "organizador" for selecionado
             const radios = document.querySelectorAll('input[name="tipo"]');
-            const senhaDiv = document.getElementById('senhaAcessoDiv');
-            const senhaDiv2 = document.getElementById('senhaDiv');
             const tokenDiv = document.getElementById('tokenAcessoDiv');
             radios.forEach(radio => {
                 radio.addEventListener('change', function() {
                     if (this.value === 'organizador') {
-                        senhaDiv.style.display = 'block';
-                        senhaDiv2.style.display = 'none';
                         tokenDiv.style.display = 'block';
                     } else {
-                        senhaDiv.style.display = 'none';
-                        senhaDiv2.style.display = 'block';
                         tokenDiv.style.display = 'none';
 
 
