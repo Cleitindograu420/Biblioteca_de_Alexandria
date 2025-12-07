@@ -1,4 +1,4 @@
-h2 {
+.div-h1 {
     text-align: center;
     color: #ffffff;
     font-size: 2rem;
@@ -9,11 +9,13 @@ h2 {
 }
 
 
-/* Texto em caixa */
-.eventosDisp-quadro {
+.infos {
     margin-left: 10%;
     margin-right: 10%;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
     background: rgba(255, 255, 255, 0.05);
     border-radius: 10px;
@@ -27,4 +29,197 @@ h2 {
     /* Suavização para leitura */
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
+}
+
+.div-inputs{
+    display: flex;
+    flex-direction: column;
+    justify-content: right;
+    align-items: center;  
+}
+
+.div-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+.div-button button {
+    
+    width: 80px;
+    height: 40px;
+    font-size: 15px;
+    border: 3px solid #006477;;
+    border-radius: 10px;
+}
+
+/*----------------------------------------------------------------------------------*/
+
+#nome-field {
+    position: relative;
+    width: 250px;
+}
+
+#nome-field label {
+    position: absolute;
+    top: 4px;
+    left: 8px;
+    pointer-events: none;   /* não bloqueia clique */
+    font-size: 14px;
+}
+
+#nome-field input {
+    background-color: #006477;
+    width: 250px;
+    height: 25px;
+}
+
+#nome-field input::placeholder {
+    color: #ffffff;
+}
+
+/*----------------------------------------------------------------------------------*/
+
+#telefone-field {
+    position: relative;
+    width: 250px;
+}
+
+#telefone-field label {
+    position: absolute;
+    top: 4px;
+    left: 8px;
+    pointer-events: none;   /* não bloqueia clique */
+    font-size: 14px;
+}
+
+#telefone-field input {
+    background-color: #006477;
+    width: 250px;
+    height: 25px;
+}
+
+#telefone-field input::placeholder {
+    color: #ffffff;
+}
+
+/*----------------------------------------------------------------------------------*/
+
+#inst-field {
+    position: relative;
+    width: 250px;
+}
+
+#inst-field label {
+    position: absolute;
+    top: 4px;
+    left: 8px;
+    pointer-events: none;   /* não bloqueia clique */
+    font-size: 14px;
+}
+
+#inst-field input {
+    background-color: #006477;
+    width: 250px;
+    height: 25px;
+}
+
+#inst-field input::placeholder {
+    color: #ffffff;
+}
+
+/*----------------------------------------------------------------------------------*/
+
+#email-field {
+    position: relative;
+    width: 250px;
+}
+
+#email-field label {
+    position: absolute;
+    top: 4px;
+    left: 8px;
+    pointer-events: none;   /* não bloqueia clique */
+    font-size: 14px;
+}
+
+#email-field input {
+    background-color: #006477;
+    width: 250px;
+    height: 25px;
+}
+
+#email-field input::placeholder {
+    color: #ffffff;
+}
+/*----------------------------------------------------------------------------------*/
+
+#senhaDiv {
+    position: relative;
+    width: 250px;
+}
+
+#senhaDiv label {
+    position: absolute;
+    top: 4px;
+    left: 8px;
+    pointer-events: none;   /* não bloqueia clique */
+    font-size: 14px;
+}
+
+#senhaDiv input {
+    background-color: #006477;
+    width: 250px;
+    height: 25px;
+}
+
+#senhaDiv input::placeholder {
+    color: #ffffff;
+}
+
+/*----------------------------------------------------------------------------------*/
+#tokenAcessoDiv {
+    position: relative;
+    width: 250px;
+}
+
+#tokenAcessoDiv label {
+    position: absolute;
+    top: 4px;
+    left: 8px;
+    pointer-events: none;   /* não bloqueia clique */
+    font-size: 14px;
+}
+
+#tokenAcessoDiv input {
+    background-color: #006477;
+    width: 250px;
+    height: 25px;
+}
+
+#tokenAcessoDiv input::placeholder {
+    color: #ffffff;
+}
+
+/*----------------------------------------------------------------------------------*/
+
+input {
+    padding: 8px;
+    border-radius: 4px;
+    border: none;
+    margin-bottom: 10px;
+}
+
+button {
+    padding: 7px 15px;
+    background-color: #006477;
+    border: none;
+    
+    border-radius: 4px;
+    cursor: pointer;
+    color: #ffffff;
+}
+
+button:hover {
+    background-color: #006477;
 }
