@@ -1,16 +1,16 @@
 {% extends "base_org.html" %}
 {% block content %}
 
-<h2>Lista de Eventos</h2>
+<h2>Lista de Logs</h2>
 
 <table class="table">
     <thead>
         <tr>
-            <th>id_log</th>
-            <th>id_evento</th>
-            <th>usuario_id</th>
-            <th>horaAcao</th>
-            <th>acao</th>
+            <th>ID Log</th>
+            <th>ID Evento</th>
+            <th>ID Usuário</th>
+            <th>Hora da Ação</th>
+            <th>Ação</th>
             <th></th>
         </tr>
     </thead>
@@ -23,12 +23,16 @@
             <td>{{ Log.usuario_id }}</td>
             <td>{{ Log.horaAcao }}</td>
             <td>{{ Log.acao }}</td>
-            <td><form action="{% url 'deletar_evento' evento.pk %}" method="POST" style="display:inline;">
+
+            <td>
+                <form action="{% url 'deletar_log' Log.id_log %}" method="POST" style="display:inline;">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-danger">Excluir</button>
-                </form></td>
+                </form>
+            </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+
 {% endblock content %}
