@@ -25,7 +25,6 @@ class Evento (models.Model):
     organizador = models.TextField(max_length=200, null=False, blank=False)
     vagas = models.IntegerField(validators=[MinValueValidator(1)], null=False)
     certificado = models.BooleanField(default=False)
-    assinatura = models.CharField(max_length=200, null=True, blank=True)
 class Inscrito(models.Model):
     id_inscricao = models.AutoField(primary_key=True, unique=True)
     usuario_id = models.ForeignKey(Usuario, on_delete = models.CASCADE)
