@@ -10,6 +10,8 @@
             <th>Tipo</th>
             <th>Data de inicio</th>
             <th>Data de encerramento</th>
+            <th>Hora de inicio</th>
+            <th>Hora de termino</th>
             <th>Duracao</th>
             <th>Local</th>
             <th>Participantes</th>
@@ -25,11 +27,16 @@
             <td>{{ evento.tipoevento }}</td>
             <td>{{ evento.dataIni|date:"d/m" }}</td>
             <td>{{ evento.dataFin|date:"d/m" }}</td>
+            <td>{{ evento.horasIni|time:"H:i" }}</td>
+            <td>{{ evento.horasFin|time:"H:i" }}</td>
             <td>{{ evento.horasDura }}</td>
             <td>{{ evento.local }}</td>
             <td>{{ evento.quantPart }}</td>
             <td>{{ evento.vagas }}</td>
             <td>{{ evento.organizador }}</td>
+
+            <td><a class="nav-link" href={% url 'editar_evento' evento.pk %}>Editar Evento</a></td>
+            
             <td><form action="{% url 'deletar_evento' evento.pk %}" method="POST" style="display:inline;">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-danger">Excluir</button>

@@ -1,0 +1,92 @@
+.infos {
+    margin-left: 10%;
+    margin-right: 10%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+
+    color: #eaeaea;
+    font-size: 1.05rem;
+    font-family: "Segoe UI", Arial, sans-serif;
+    line-height: 1.7;
+    text-align: justify;
+
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Container principal dos campos do formulário */
+.div-inputs {
+    display: flex;
+    flex-direction: column; /* Coloca os pares rótulo-input em coluna */
+    align-items: center; 
+    gap: 15px; /* Reduzi o espaçamento vertical entre os campos para um valor mais usual */
+    width: 100%; 
+}
+
+.campo {
+    display: flex;
+    /* Mantém o rótulo à esquerda e o input à direita */
+    justify-content: space-between; 
+    align-items: center;
+    width: 100%;
+    /* Aumentei a largura máxima para dar mais espaço para o rótulo e o input */
+    max-width: 600px; 
+    padding: 0 10px; 
+    box-sizing: border-box;
+}
+
+.campo label {
+    /* NOVIDADE: Define uma largura fixa para o rótulo. Isso garante que todos os inputs fiquem alinhados */
+    width: 250px; 
+    text-align: left;
+    /* A distância entre o rótulo (que agora tem 250px) e o input */
+    margin-right: 30px; /* Reduzido de 60px para um espaçamento mais limpo */
+    font-size: 1.05rem;
+    color: #eaeaea;
+    /* Remover flex-grow: 1, pois estamos usando largura fixa */
+}
+
+
+.campo input[type="text"],
+.campo input[type="number"],
+.campo input[type="date"],
+.campo input[type="time"],
+.campo select {
+    background-color: #006477;
+    /* Mantém a largura do input em 250px */
+    width: 250px; 
+    height: 40px; 
+    padding: 8px;
+    border-radius: 4px;
+    border: none;
+    color: #ffffff;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+
+.div-button {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.btn-enviar {
+    width: 150px; 
+    height: 45px;
+    background-color: #006477;
+    border: none;
+    color: #ffffff;
+    font-size: 18px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.btn-enviar:hover {
+    background-color: #004f5e;
+}

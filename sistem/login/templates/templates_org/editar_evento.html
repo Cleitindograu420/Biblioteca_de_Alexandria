@@ -1,0 +1,86 @@
+{% extends "base_org.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'Css/Css_org/style_cad_evento.css'%}">
+    <div class="infos" >
+        <form action="{% url 'editar_evento' evento.pk %}" method="post">
+            {% csrf_token %}
+            <div>
+                <h1>Edição de Eventos</h1>
+            </div> 
+
+            <div class="campo" id="nome-field">
+                <label>Nome do Evento:</label>
+                <input name="nome" class="form-control-sm" type="text" value="{{ evento.nome }}">
+            </div>
+
+            <div class="campo" id="tipo-field">
+                <label>Tipo do Evento:</label>
+                <select name='tipoEvento' required>
+                    <option value="" {% if not evento.tipoEvento %}selected{% endif %}>Selecione um evento</option>
+                    <option value="1" {% if evento.tipoEvento == 1 %}selected{% endif %}>Palestra</option>
+                    <option value="2" {% if evento.tipoEvento == 2 %}selected{% endif %}>Workshop</option>
+                    <option value="3" {% if evento.tipoEvento == 3 %}selected{% endif %}>Ensino presencial</option>
+                    <option value="4" {% if evento.tipoEvento == 4 %}selected{% endif %}>Ensino a distancia</option>
+                </select>
+            </div>
+
+            <div class="campo" id="data_ini-field">
+                <label>Data de início:</label>
+                <input name="dataIni" type="date" class="form-control-sm" value="{{ evento.dataIni|date:'Y-m-d' }}">
+            </div>
+
+            <div class="campo" id="data_fin-field">
+                <label>Data de encerramento:</label>
+                <input name="dataFin" type="date" class="form-control-sm" value="{{ evento.dataFin|date:'Y-m-d' }}">
+            </div>
+
+            <div class="campo" id="duracao-field">
+                <label>Duração do Evento(horas):</label>
+                <input name="horasDura" class="form-control-sm" type="number" value="{{ evento.horasDura }}">
+            </div>
+
+            <div class="campo" id="horas_ini-field">
+                <label>Horario de inicio:</label>
+                <input name="horasIni" class="form-control-sm" type="time" value="{{ evento.horasIni|time:'H:i' }}">
+            </div>
+
+            <div class="campo" id="horas_fin-field">
+                <label>Horario de encerramento:</label>
+                <input name="horasFin" class="form-control-sm" type="time" value="{{ evento.horasFin|time:'H:i' }}">
+            </div>
+
+
+            <div class="campo" id="local-field">
+                <label>Local:</label>
+                <input name="local" class="form-control-sm" type="text" value="{{ evento.local }}">
+            </div>
+
+            <div class="campo" id="vagas-field">
+                <label>Vagas:</label>
+                <input name="vagas" class="form-control-sm" type="number" value="{{ evento.vagas }}">
+            </div>
+
+            <div class="campo" id="org-field">
+                <label>Organizador Responsável:</label>
+                <select name='organizador' required> 
+                    <option value="" {% if not evento.organizador_id %}selected{% endif %}>Selecione um evento</option>
+                    {% for org in organizadores %}
+                        <option value="{{ org.id }}" {% if evento.organizador_id == org.id %}selected{% endif %}>
+                            {{ org.nome }}
+                        </option>
+                    {% endfor %}
+                    {% for prof in professor %}
+                        <option value="{{ prof.id }}" {% if evento.organizador_id == prof.id %}selected{% endif %}>
+                            {{ prof.nome }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="div-button">
+                <button type="submit" class="btn-enviar">Enviar</button>
+            </div>
+        </form>
+    </div>
+{% endblock content %}

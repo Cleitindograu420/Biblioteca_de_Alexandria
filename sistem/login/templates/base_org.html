@@ -1,52 +1,37 @@
 <!DOCTYPE html>
 {% load static %}
-
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <title>
-      {% block title %}
-        Bibl alexandria
-      {% endblock %}
-    </title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"  rel="stylesheet" />
+    <meta http-equiv="Cache-Control" content="no-store" />
+    <link rel="stylesheet" href="{% static 'Css/style_base.css' %}">
+    <title>{% block title %}Bibl alexandria{% endblock %}</title>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="{% url 'home_page' %}">Bibl alex</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
+    <header class="topbar" role="banner">
+      <a href="{% url 'home_page' %}" class="brand">
+          <img src="{% static 'imagens/logo_bibli.png' %}" alt="Logo Biblioteca de Alexandria">
+      </a>
+
+      <nav aria-label="Navegação principal">
         
-          <li class="nav-item active">
-            <a class="nav-link" href={% url 'cadastro_evento' %}>Cadastrar Eventos</a>
-          </li>
-          <li class="nav-item active">
-            <a class="nav-link" href={% url 'eventos'  %}>Eventos</a>
-          </li>
-          <li class="nav-item active">
-            <a class="nav-link" href={% url 'usuario'  %}>Usuarios</a>
-          </li>
-          <li class="nav-item active">
-            <a class="nav-link" href={% url 'edit_user' %}>Perfil</a>
-          </li>
-          <li class="nav-item active">
-            <a class="nav-link" href={% url 'logs' %}>Logs</a>
-          </li>
-          <li class="nav-item active">
-            <a class="nav-link" href={% url 'logout' %}>Sair</a>
-          </li>
+        <ul class="nav">
+          <li><a class="nav-link" href={% url 'cadastro_evento' %}>Cadastrar Eventos</a></li>
+          <li><a class="nav-link" href={% url 'eventos'  %}>Eventos</a></li>
+          <li><a class="nav-link" href={% url 'usuario'  %}>Usuarios</a></li>
+          <li><a class="nav-link" href={% url 'edit_user' %}>Perfil</a></li>
+          <li><a class="nav-link" href={% url 'logs' %}>Logs</a></li>
+          <li><a class="nav-link" href={% url 'logout' %}>Sair</a></li>
         </ul>
-      </div>   
-    </nav>
-    <div class="container">
-      {% block content %} 
       
+      </nav>
+    </header>
+
+  </body>
+
+    <div class="container">
+      {% block content %}
       {% endblock %}
     </div>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" ></script>
-  </body>
 </html>

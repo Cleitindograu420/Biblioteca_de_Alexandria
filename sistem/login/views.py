@@ -255,6 +255,20 @@ def todos_eventos(request):
 
 def cadastro_eventos(request):
     from datetime import datetime
+    usuario_id = request.session.get("usuario_id")
+    
+    if not usuario_id:
+        return redirect("login")
+      
+    try:
+        usuario = get_object_or_404(Usuario, id_usuario = usuario_id)
+    
+    except Usuario.DoesNotExist:
+        return HttpResponse("Usuário não foi encontrado.")
+    
+    #se o usuario n for organizador, redireciona ele para a pagina de inscricoes, apenas organizadores podem deletar eventos
+    if usuario.tipo != "organizador":
+        return redirect("inscricao")
     
     if request.method == "POST":
         dia_inicio_date = request.POST.get("dataIni")
@@ -269,7 +283,6 @@ def cadastro_eventos(request):
         except ValueError:
             return HttpResponse("O campo data de início e final devem ser uma data válida")
 
-        # (as demais validações e criação do evento...)
 
         novo_evento = Evento(
             nome=request.POST.get("nome"),
@@ -283,6 +296,7 @@ def cadastro_eventos(request):
             organizador=request.POST.get("organResp"),
             vagas=request.POST.get("vagas"),
         )
+        
 
         Log.objects.create(
             id_evento=novo_evento.id_evento,
@@ -293,7 +307,7 @@ def cadastro_eventos(request):
         return redirect("eventos")
 
     # Se for GET, apenas exibe o formulário
-    return render(request, 'templates_org/cad_eventos_org.html')
+    return render(request, 'templates_org/cad_eventos_org.html', {"organizadores": Usuario.objects.filter(tipo="organizador",), "professor": Usuario.objects.filter(tipo="professor")})
 
 def verificacao_org(request):
     usuario_id = request.session.get("usuario_id")
@@ -361,6 +375,12 @@ def editar_evento(request, pk):
     #pega o evento com o id passado na url    
     evento = get_object_or_404(Evento, pk = pk)
 
+    context = {
+        "evento": evento,
+        "organizadores": Usuario.objects.filter(tipo="organizador"),
+        "professores": Usuario.objects.filter(tipo="professor"),
+    }
+    
     if request.method == "POST":
         nome = request.POST.get("nome")
         tipoevento = request.POST.get("tipo_evento")
@@ -415,6 +435,7 @@ def editar_evento(request, pk):
                 evento.vagas = vagas
                 evento.save()
 
+
                 Log.objects.create(
                     id_evento=evento.id_evento,
                     acao=f"Evento editado: {evento.nome}"
@@ -429,9 +450,8 @@ def editar_evento(request, pk):
         else:
             return HttpResponse("Nenhum dos campos pode estar vazio.")
 
-        #renderiza a página de edição com os dados do evento atual
+    return render(request, "templates_org/editar_evento.html", context)
 
-    return render(request, "usuarios/editar_evento.html", {"evento" : evento})
 #Funcoes para inscricoes------------------------------------------------------------------------------------------------
 
 def home_inscricao(request):
