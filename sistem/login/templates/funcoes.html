@@ -14,7 +14,7 @@
                     <input name= "nome" class="form-control-sm" type="text" placeholder="Nome:" required>
                 </div>
                 <div id="telefone-field">
-                    <input name= "telefone" class="form-control-sm" type="text"placeholder="Telefone:" required>
+                    <input name="telefone" class="form-control-sm" type="text" placeholder="Telefone:" oninput="mascaraTelefone(this)" maxlength="15" required>
                 </div>
                 <div id="inst-field">
                     <input name= "instEnsino" class="form-control-sm" type="text"placeholder="Instituicao de Ensino:" required>
@@ -40,29 +40,52 @@
                 </div>
 
                 
-                <script>
-                    // Exibe o campo de senha especial somente se "organizador" for selecionado
-                    const radios = document.querySelectorAll('input[name="tipo"]');
-                    const tokenDiv = document.getElementById('tokenAcessoDiv');
-                    const tokenInput = tokenDiv.querySelector('input');
 
-                    radios.forEach(radio => {
-                        radio.addEventListener('change', function() {
-                            if (this.value === 'organizador') {
-                                tokenDiv.style.display = 'block';
-                                tokenInput.required = true;   // ATIVAR
-                            } else {
-                                tokenDiv.style.display = 'none';
-                                tokenInput.required = false;  // DESATIVAR
-                            }
-                        });
-                    });
 
-                </script>
             </div>
             <div class="div-button">
                 <button type="submit" class="btn-enviar">Enviar</button>
             </div>
         </form>
+                <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                        const radios = document.querySelectorAll('input[name="tipo"]');
+                        const tokenDiv = document.getElementById('tokenAcessoDiv');
+                        const tokenInput = tokenDiv.querySelector('input');
+
+                        // Ao carregar a página, corrigir o required
+                        if (!document.querySelector('input[name="tipo"]:checked') || 
+                            document.querySelector('input[name="tipo"]:checked').value !== "organizador") {
+                            tokenDiv.style.display = 'none';
+                            tokenInput.required = false;
+                        }
+
+                        radios.forEach(radio => {
+                            radio.addEventListener('change', function() {
+                                if (this.value === 'organizador') {
+                                    tokenDiv.style.display = 'block';
+                                    tokenInput.required = true;
+                                } else {
+                                    tokenDiv.style.display = 'none';
+                                    tokenInput.required = false;
+                                }
+                            });
+                        });
+                    });
+                </script>
+
+
+
+                <script>
+                    function mascaraTelefone(input) {
+                        let valor = input.value.replace(/\D/g, ""); // Remove tudo que não é número
+
+                        if (valor.length > 0) valor = "(" + valor;
+                        if (valor.length > 3) valor = valor.slice(0, 3) + ") " + valor.slice(3);
+                        if (valor.length > 10) valor = valor.slice(0, 10) + "-" + valor.slice(10, 14);
+
+                        input.value = valor;
+                    }
+                </script>
         </div>
 {% endblock content %}
