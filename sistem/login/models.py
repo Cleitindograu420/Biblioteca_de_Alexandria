@@ -19,7 +19,6 @@ class Evento (models.Model):
     horasIni = models.TimeField(null=True, blank=True)
     horasFin = models.TimeField(null=True, blank=True)
     horasDura = models.DurationField()
-
     local = models.TextField(max_length=200)
     quantPart = models.IntegerField(validators=[MinValueValidator(0)], null=False, blank=False, default=0)
     organizador = models.TextField(max_length=200, null=False, blank=False)
@@ -37,3 +36,10 @@ class Certificado(models.Model):
     evento_id = models.ForeignKey(Evento, on_delete= models.CASCADE, related_name="certificados")
     dataEmissao = models.DateField(default= timezone.now)
     horas = models.IntegerField(validators=[MinValueValidator(0)], null=True, blank=True)
+
+class Log(models.Model):
+    id_log = models.AutoField(primary_key=True, unique=True)
+    id_evento = models.ForeignKey(Evento, on_delete=models.CASCADE)
+    usuario_id = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    acao = models.CharField(max_length=300)
