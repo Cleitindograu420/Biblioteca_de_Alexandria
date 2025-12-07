@@ -95,9 +95,12 @@ DATABASES = {
         "PASSWORD": tmpPostgres.password,
         "HOST": tmpPostgres.hostname,
         "PORT": tmpPostgres.port or 5432,
-        "OPTIONS": dict(parse_qsl(tmpPostgres.query)),
+        "OPTIONS": {
+            "sslmode": "require",   # obrigatório no Neon
+        },
     }
 }
+
 
 
 
