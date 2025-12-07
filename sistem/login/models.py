@@ -38,8 +38,9 @@ class Certificado(models.Model):
     horas = models.IntegerField(validators=[MinValueValidator(0)], null=True, blank=True)
 class Log(models.Model):
     id_log = models.AutoField(primary_key=True, unique=True)
-    id_evento = models.ForeignKey(Evento, on_delete=models.CASCADE, null=True, blank=True)
-    usuario_id = models.ForeignKey(Usuario, on_delete=models.CASCADE, null=True, blank=True)
+    # preserve logs when an Evento is deleted by setting the FK to NULL
+    id_evento = models.ForeignKey(Evento, on_delete=models.SET_NULL, null=True, blank=True)
+    usuario_id = models.ForeignKey(Usuario, on_delete=models.SET_NULL, null=True, blank=True)
     horaAcao = models.DateTimeField(auto_now_add=True)
     dataAcao = models.DateField(auto_now_add=True, null=True)
     acao = models.CharField(max_length=300)
