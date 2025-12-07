@@ -11,6 +11,10 @@
                 Local: {{ evento.local }} <br>
                 Data: {{ evento.dataI }} até {{ evento.dataF }} <br>
                 Horário: {{ evento.horarioI }}h às {{ evento.horarioF }}h
+                <form action="{% url 'deletar_evento' evento.pk %}" method="POST" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Excluir</button>
+                </form>
             </li>
             <hr>
         {% endfor %}
