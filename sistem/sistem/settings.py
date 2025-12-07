@@ -78,15 +78,16 @@ WSGI_APPLICATION = 'sistem.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'neondb',
-        'USER': 'neondb_owner',
-        'PASSWORD': 'npg_u1Hp5zXFejYx',
-        'HOST': 'ep-autumn-dust-ac7ou3qb-pooler.sa-east-1.aws.neon.tech',
-        'PORT': '5432',
-        'OPTIONS': {
-            'sslmode': 'require'
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "neondb",
+        "USER": "neondb_owner",
+        "PASSWORD": "npg_u1Hp5zXFejYx",
+        "HOST": "ep-autumn-dust-ac7ou3qb-pooler.sa-east-1.aws.neon.tech",
+        "PORT": "5432",
+        "OPTIONS": {
+            "sslmode": "require",
+            "channel_binding": "require",
         }
     }
 }
