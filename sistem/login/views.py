@@ -59,7 +59,7 @@ def cadastro_usuario(request):
         senha = request.POST.get('senha')
         email = request.POST.get('email')
         tipo = request.POST.get('tipo', '').lower()
-        senha_tipo = request.POST.get('senha_acesso')
+        
 
         token_acesso = request.POST.get("token_acesso")
 
@@ -110,9 +110,9 @@ def cadastro_usuario(request):
                 nome=nome,
                 telefone=telefone,
                 instEnsino=instEnsino,
-                senha=senha_valida,
+                senha=senha,
                 email=email,
-                tipo=senha_tipo
+                tipo=tipo
             )
             #redireciona o usuario para a tela de login
             return redirect('login')
