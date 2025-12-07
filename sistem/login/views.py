@@ -117,7 +117,7 @@ def cadastro_usuario(request):
 
             Log.objects.create(
                 id_evento=None,
-                usuario_id=None,
+                usuario_id=Usuario.id_usuario,
                 acao=f"Novo usuário cadastrado: {nome} ({email})"
             )
             #redireciona o usuario para a tela de login
@@ -593,3 +593,27 @@ def logout(request):
     request.session.flush()
     
     return redirect("login")
+
+#Funcoes para logs------------------------------------------------------------------------------------------------------
+
+def logs(request):
+    usuario_id = request.session.get("usuario_id")
+    
+    if not usuario_id:
+        return redirect("login")
+      
+    try:
+        usuario = get_object_or_404(Usuario, id_usuario = usuario_id)
+    
+    except Usuario.DoesNotExist:
+        return HttpResponse("Usuário não foi encontrado.")
+    
+    #se o usuario n for organizador, redireciona ele para a pagina de inscricoes, apenas organizadores podem ver os logs
+    if usuario.tipo != "organizador":
+        return redirect("inscricao")
+    
+    logs = {
+        'logs' : Log.objects.all().order_by('-data_hora')
+    }
+    
+    return render(request, "templates_org/logs_org.html", logs)
