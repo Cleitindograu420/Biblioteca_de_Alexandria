@@ -90,6 +90,7 @@ def cadastro_usuario(request):
         try:
             telefone_valido(telefone)
             email_valido(email)
+            senha_valida(senha)
 
             #se o telefone ja estiver cadastrado, retorna uma mensagem de erro
             if Usuario.objects.filter(telefone = telefone).exists():
@@ -109,7 +110,7 @@ def cadastro_usuario(request):
                 nome=nome,
                 telefone=telefone,
                 instEnsino=instEnsino,
-                senha=senha,
+                senha=senha_valida,
                 email=email,
                 tipo=tipo
             )
@@ -500,32 +501,33 @@ def ver_certificados(request):
     return render(request, "usuarios/certificados.html", eventos)
 
 def emitir_certificados(request, evento_id):
-
-    #permite que tudo dentro do bloco seja executado como uma transacao atomica, ou seja, se der algum erro em qualquer parte do bloco, nenhuma mudanca sera feita no banco de dados
+    
     with transaction.atomic():
-        #pega o evento com a pk passado na url
         try:
-            evento = get_object_or_404(Evento, pk = evento_id)
+            evento = get_object_or_404(Evento, pk=evento_id)
 
-            inscricoes = Inscrito.objects.filter(evento_id = evento.pk)
+            inscricoes = Inscrito.objects.filter(evento_id=evento.pk)
 
-
-            #se n houver inscricoes, retorna uma mensagem de erro
             if not inscricoes.exists():
                 return HttpResponse("Não há inscritos para este evento.")
-            
+
             for inscricao in inscricoes:
-                Certificado.objects.create(usuario_id = inscricao.usuario_id, evento_id = inscricao.evento_id, assinatura = inscricao.evento_id.assinatura, horas = inscricao.evento_id.horas)
-            
-            Inscrito.objects.filter(evento_id = evento.pk).delete()        
-            
-            #salva que o certificado ja foi emitido para o evento
-            evento.emitido = True
+                Certificado.objects.create(
+                    usuario_id = inscricao.usuario_id,
+                    evento_id = inscricao.evento_id,
+                    horas = inscricao.evento_id.horasDura
+                )
+
+            # Remove inscritos após emitir
+            Inscrito.objects.filter(evento_id=evento.pk).delete()
+
+            # Marca evento como certificado emitido
+            evento.certificado = True
             evento.save()
-            
+
         except Exception as e:
             return HttpResponse(f"Erro na emissão de certificados: {e}")
-            
+
     return redirect("/certificados/")
 
 def meus_certificados(request):
