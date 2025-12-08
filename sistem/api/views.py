@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from login.models import Usuario, Evento, Inscrito, Log
 from django.db import transaction
-from .serializer import UserSerializer
+from .serializer import UserSerializer, EventoSerializer
 from django.contrib.auth.models import User
 
 @api_view(['GET'])
@@ -41,6 +41,14 @@ def user_detail(request, pk):
     elif request.method == 'DELETE':
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['GET'])
+def eventos_list(request):
+    """Retorna todos os eventos do banco de dados."""
+    eventos = Evento.objects.all()
+    serializer = EventoSerializer(eventos, many=True)
+    return Response(serializer.data)
     
 @api_view(['POST'])
 def inscrever_evento(request):
