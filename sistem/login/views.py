@@ -6,6 +6,8 @@ from django.core.exceptions import ValidationError
 from django.contrib import messages
 from datetime import datetime
 from django.db import transaction
+from django.core.mail import send_mail
+from django.conf import settings
 
 
 #funcao para renderizar a pagina home
@@ -15,8 +17,12 @@ def base(request):
     if not usuario_id:
         #teste em front 
         return redirect("login")
-    
-    usuario = get_object_or_404(Usuario, id_usuario=usuario_id)
+    # se houver um id na sessao mas o usuario nao existir no banco,
+    # removemos o id da sessao e redirecionamos para o login
+    usuario = Usuario.objects.filter(id_usuario=usuario_id).first()
+    if not usuario:
+        request.session.pop('usuario_id', None)
+        return redirect('login')
 
      # redireciona conforme o tipo
     if usuario.tipo == "organizador":
@@ -31,7 +37,7 @@ def delete_user(request):
     #esse trecho se repete em quase todas as funcoes, ele pega o id do usuario que ta logado na sessao e se n tiver ninguem logado redireciona pra tela de login
     usuario_id = request.session.get('usuario_id')
 
-    if not usuario:
+    if not usuario_id:
         return redirect('login')
     #------------------------------------------------------------------------------------------------------------------
     #se o metodo for get, ele pega o usuario com o id que ta na sessao e renderiza a pagina de deletar usuario
@@ -115,10 +121,26 @@ def cadastro_usuario(request):
                 usuario_id=novo_usuario,
                 acao=f"Novo usuário cadastrado: {nome} ({email})"
             )
+            # Envia e-mail de boas-vindas ao usuário cadastrado
+            try:
+                subject = "Cadastro realizado com sucesso - Biblioteca de Alexandria"
+                message = (
+                    f"Olá {nome},\n\n"
+                    "Seu cadastro foi realizado com sucesso na Biblioteca de Alexandria.\n"
+                    "Acesse o sistema com seu e-mail e senha fornecidos.\n\n"
+                    "Atenciosamente,\n Alexandre o Grande"
+                )
+                from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'no-reply@biblioteca.local')
+                send_mail(subject, message, from_email, [email], fail_silently=False)
+                Log.objects.create(usuario_id=novo_usuario, acao=f"E-mail de boas-vindas enviado para {email}")
+            except Exception as e:
+                Log.objects.create(usuario_id=novo_usuario, acao=f"Falha ao enviar e-mail para {email}: {e}")
             return redirect('login')
 
         except ValidationError as e:
             return HttpResponse(f"Erro: {e}")
+    
+    
 
     return render(request, 'funcoes.html', {'usuarios': Usuario.objects.all()})
 
@@ -255,11 +277,13 @@ def todos_eventos(request):
 def cadastro_eventos(request):
     from datetime import datetime
     usuario_id = request.session.get("usuario_id")
-    organizador = Usuario.objects.get(id_usuario=usuario_id)
-
-    
     if not usuario_id:
         return redirect("login")
+    # busca o organizador somente apos confirmar que ha um id na sessao
+    organizador = Usuario.objects.filter(id_usuario=usuario_id).first()
+    if not organizador:
+        request.session.pop('usuario_id', None)
+        return redirect('login')
       
     try:
         usuario = get_object_or_404(Usuario, id_usuario = usuario_id)
