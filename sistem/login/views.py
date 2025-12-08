@@ -582,9 +582,16 @@ def usuario_eventos(request, usuario_id):
 
 #Funcoes para certificados----------------------------------------------------------------------------------------------
 
-def ver_certificados(request):
+def ver_certificados(request, id_carrinho):
+
+    certificado = get_object_or_404(
+        Certificado.objects.select_related('usuario_id', 'evento_id', 'evento_id__organizador'),
+        id_carrinho=id_carrinho
+    )
+
+    # resto do código
+
     # Certificados do usuário logado
-    certificados = Certificado.objects.filter(usuario_id=request.user).select_related('evento_id')
 
     # Inscrições de eventos finalizados que ainda não tiveram certificado emitido
     eventos_finalizados = Inscrito.objects.filter(
@@ -597,7 +604,7 @@ def ver_certificados(request):
         ins.horasDura_int = ins.evento_id.horasDura or 0
 
     context = {
-        'certificados': certificados,
+        'certificados': certificado,
         'eventos_finalizados': eventos_finalizados
     }
 

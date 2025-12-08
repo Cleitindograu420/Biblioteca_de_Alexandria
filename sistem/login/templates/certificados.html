@@ -25,7 +25,8 @@
                 <td>{{ cert.dataEmissao|date:"d/m/Y" }}</td>
                 <td>{{ cert.horas }}</td>
                 <td>
-                    <a href="{% url 'ver_certificados' cert.id_carrinho %}">
+                    <a href="{% url 'ver_certificados' cert.pk %}">
+
                         <button class="emitir-btn">Ver</button>
                     </a>
                 </td>

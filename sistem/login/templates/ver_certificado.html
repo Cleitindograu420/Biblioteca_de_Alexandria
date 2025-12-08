@@ -3,25 +3,21 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'Css/ver_certificado.css' %}">
-</head>
-<body>
-    <div class="certificado">
-        <h1>Certificado de Participação</h1>
-        <h2>Emitido por Biblioteca Alexandria</h2>
 
-        <p>Certificamos que <strong>{{ certificado.usuario_id.nome }}</strong></p>
-        <p>participou do evento <strong>{{ certificado.evento_id.nome }}</strong></p>
-        <p>com carga horária de <strong>{{ horas_dura }} horas</strong></p>
-        <p>Emitido em: <strong>{{ certificado.dataEmissao }}</strong></p>
+<div class="certificado">
+    <h1>Certificado de Participação</h1>
+    <h2>Emitido por Biblioteca Alexandria</h2>
 
-        <div class="assinatura">
-            <p><strong>{{ certificado.evento_id.organizador.nome }}</strong></p>
+    <p>Certificamos que <strong>{{ certificado.usuario_id.nome }}</strong></p>
+    <p>participou do evento <strong>{{ certificado.evento_id.nome }}</strong></p>
+    <p>com carga horária de <strong>{{ certificado.horas }}</strong> horas</p>
+    <p>Emitido em: <strong>{{ certificado.dataEmissao }}</strong></p>
 
-            <div class="linha-assinatura"></div>
-            <p>Assinatura</p>
-        </div>
+    <div class="assinatura">
+        <p><strong>{{ certificado.evento_id.organizador.nome }}</strong></p>
+        <div class="linha-assinatura"></div>
+        <p>Assinatura</p>
     </div>
-</body>
-</html>
+</div>
 
 {% endblock %}
