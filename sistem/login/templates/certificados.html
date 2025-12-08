@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'Css/style_certificados.css' %}">
+
+<h2>Certificados Disponíveis</h2>
+
+<div class="eventos">
+    {% if certificados %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Evento</th>
+                <th>Data de Encerramento</th>
+                <th>Duração (horas)</th>
+                <th>Certificado</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for cert in certificados %}
+            <tr>
+                <td>{{ cert.evento_id.nome }}</td>
+                <td>{{ cert.dataEmissao|date:"d/m/Y" }}</td>
+                <td>{{ cert.horas }}</td>
+                <td>
+                    <a href="{% url 'ver_certificados' cert.id_carrinho %}">
+                        <button class="emitir-btn">Ver</button>
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+
+    {% else %}
+        <p>Nenhum certificado disponível no momento.</p>
+    {% endif %}
+</div>
+<h2>Eventos Finalizados – Emitir Certificado</h2>
+
+<div class="eventos2">
+{% if eventos_finalizados %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Evento</th>
+                <th>Data de Fim</th>
+                <th>Duração</th>
+                <th>Emitir</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for ins in eventos_finalizados %}
+            <tr>
+                <td>{{ ins.evento_id.nome }}</td>
+                <td>{{ ins.evento_id.dataFin|date:"d/m/Y" }}</td>
+                <td>{{ ins.horasDura_int }} h</td>
+
+                <td>
+                    <a href="{% url 'emitir_certificados' ins.evento_id.id_evento %}">
+                        <button class="emitir-btn">Emitir</button>
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Nenhum evento finalizado para emitir certificado.</p>
+    {% endif %}
+</div>
+
+
+{% endblock %}
+
+

@@ -1,30 +1,47 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<link rel="stylesheet" href="{% static 'Css/style_eventos_disp.css'%}">
+<link rel="stylesheet" href="{% static 'Css/style_list_inscricoes.css'%}">
 
-    <h1>Eventos em que {{ usuario.nome }} está inscrito</h1>
-
+    <h2>Eventos em que {{ usuario.nome }} está inscrito</h2>
+<div class="eventos">
     {% if eventos %}
-        <ul>
-        {% for evento in eventos %}
-            <li>
-                {{ evento.nome }} - {{ evento.tipoEvento }} <br>
-                Local: {{ evento.local }} <br>
-                Data: {{ evento.dataI }} até {{ evento.dataF }} <br>
-                Horário: {{ evento.horarioI }}h às {{ evento.horarioF }}h
-                <form action="{% url 'emitir_certificados' evento.pk %}" method="POST" style="display:inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">Excluir</button>
-                </form>
-            </li>
-            <hr>
-        {% endfor %}
-        </ul>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Tipo</th>
+                <th>Data de inicio</th>
+                <th>Data de encerramento</th>
+                <th>Hora de inicio</th>
+                <th>Hora de termino</th>
+                <th>Duracao</th>
+                <th>Local</th>
+                <th>Vagas</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for evento in eventos %}
+            <tr>
+                <td>{{ evento.nome }}</td>
+                <td>{{ evento.tipoEvento }}</td>
+                <td>{{ evento.dataIni|date:"d/m" }}</td>
+                <td>{{ evento.dataFin|date:"d/m" }}</td>
+                <td>{{ evento.horasIni|time:"H:i" }}</td>
+                <td>{{ evento.horasFin|time:"H:i" }}</td>
+                <td>{{ evento.horasDura }}</td>
+                <td>{{ evento.local }}</td>
+                <td>{{ evento.vagas }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+      </table>
     {% else %}
         <p>Você ainda não está inscrito em nenhum evento.</p>
     {% endif %}
-</body>
+</div>
 </html>
 <section style="margin-top: 20px; text-align: center;">
   <a href="{% url 'inscricao_evento_disp' %}">

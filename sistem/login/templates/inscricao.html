@@ -10,15 +10,22 @@
             {% for evento in eventos  %}
                 {%if not evento.emitido %}
                 <div class="eventos-itens">
+
+                    {% if evento.banner %}
+                        <img src="{{ evento.banner.url }}" alt="Banner do Evento" style="width:100%; border-radius:10px;">
+                    {% else %}
+                        <img src="{% static 'imagens/temple.png' %}" alt="Banner padrão" style="width:100%; border-radius:10px;">
+                    {% endif %}
+
                     <h3>{{ evento.nome }} - {{ evento.tipoevento }}</h3>
-                    <p><strong>Tipo do Evento:</strong> {{ evento.tipoevento }}</p> 
+                    <p><strong>Tipo do Evento:</strong> {{ evento.tipoEvento }}</p> 
                     <p><strong>Local:</strong> {{ evento.local }}</p> 
                     <p><strong>Data:</strong> {{ evento.dataIni|date:"d/m" }} até {{ evento.dataFin|date:"d/m" }}</p> 
                     <p><strong>Horário:</strong> {{ evento.horasIni }}h às {{ evento.horasFin }}h</p> 
-                    <p><strong>Vagas:</strong> {{ evento.vagas }}</p> 
                     
                     {% if evento.id_evento in inscritos %}
                     <span style="color: green; font-weight: bold;"> Já inscrito</span>
+                    <br><br><br><br>
                     {% else %}
                     <p><strong>Vagas disponíveis:</strong> {{ evento.vagas }}</p> 
                         <form method="post" action="{% url 'inscricao_evento' evento.id_evento %}">

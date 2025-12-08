@@ -3,13 +3,21 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'Css/Css_org/style_cad_evento.css'%}">
     <div class="infos" >
-        <form action="{% url 'cadastro_evento' %}" method="post">
+        <form action="{% url 'cadastro_evento' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
 
             <div>
                 <h1>Cadastro de Eventos</h1>
             </div> 
 
+
+            <div class="campo" id="banner-field">
+                <label>Banner do Evento:</label>
+                <input type="file" name="banner" accept="image/*" required>
+            </div>
+
+
+            
             <div class="campo" id="nome-field">
                 <label>Nome do Evento:</label>
                 <input name="nome" class="form-control-sm" type="text"required>

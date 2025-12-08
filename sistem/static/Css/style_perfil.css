@@ -1,0 +1,304 @@
+.div-h1 {
+    text-align: center;
+    color: #ffffff;
+    font-size: 2rem;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-weight: 600;
+}
+
+
+.infos {
+    margin-left: 10%;
+    margin-right: 10%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+
+    color: #eaeaea;
+    font-size: 1.05rem;
+    font-family: "Segoe UI", Arial, sans-serif;
+    line-height: 1.7;
+    text-align: justify;
+
+    /* Suavização para leitura */
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+}
+
+.div-inputs{
+    display: flex;
+    flex-direction: column;
+    justify-content: right;
+    align-items: center;  
+}
+
+.div-button {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.btn-enviar {
+    width: 120px;
+    height: 45px;
+    background-color: #006477;
+    border: none;
+    color: #ffffff;
+    font-size: 18px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.btn-enviar:hover {
+    background-color: #004f5e;
+}
+
+/*----------------------------------------------------------------------------------*/
+
+#nome-field {
+    position: relative;
+    width: 250px;
+}
+
+#nome-field label {
+    position: absolute;
+    top: 4px;
+    left: 8px;
+    pointer-events: none;   /* não bloqueia clique */
+    font-size: 14px;
+}
+
+#nome-field input {
+    background-color: #006477;
+    color: #ffffff;
+    width: 250px;
+    height: 25px;
+}
+
+#nome-field input::placeholder {
+    color: #ffffff;
+}
+
+/*----------------------------------------------------------------------------------*/
+
+#telefone-field {
+    position: relative;
+    width: 250px;
+}
+
+#telefone-field label {
+    position: absolute;
+    top: 4px;
+    left: 8px;
+    pointer-events: none;   /* não bloqueia clique */
+    font-size: 14px;
+}
+
+#telefone-field input {
+    background-color: #006477;
+    color: #ffffff;
+
+    width: 250px;
+    height: 25px;
+}
+
+#telefone-field input::placeholder {
+    color: #ffffff;
+}
+
+/*----------------------------------------------------------------------------------*/
+
+#inst-field {
+    position: relative;
+    width: 250px;
+}
+
+#inst-field label {
+    position: absolute;
+    top: 4px;
+    left: 8px;
+    pointer-events: none;   /* não bloqueia clique */
+    font-size: 14px;
+}
+
+#inst-field input {
+    background-color: #006477;
+    color: #ffffff;
+
+    width: 250px;
+    height: 25px;
+}
+
+#inst-field input::placeholder {
+    color: #ffffff;
+}
+
+/*----------------------------------------------------------------------------------*/
+
+#email-field {
+    position: relative;
+    width: 250px;
+}
+
+#email-field label {
+    position: absolute;
+    top: 4px;
+    left: 8px;
+    pointer-events: none;   /* não bloqueia clique */
+    font-size: 14px;
+}
+
+#email-field input {
+    background-color: #006477;
+    color: #ffffff;
+
+    width: 250px;
+    height: 25px;
+}
+
+#email-field input::placeholder {
+    color: #ffffff;
+}
+/*----------------------------------------------------------------------------------*/
+
+#senhaDiv {
+    position: relative;
+    width: 250px;
+}
+
+#senhaDiv label {
+    position: absolute;
+    top: 4px;
+    left: 8px;
+    pointer-events: none;   /* não bloqueia clique */
+    font-size: 14px;
+}
+
+#senhaDiv input {
+    background-color: #006477;
+    color: #ffffff;
+
+    width: 250px;
+    height: 25px;
+}
+
+#senhaDiv input::placeholder {
+    color: #ffffff;
+}
+
+/*----------------------------------------------------------------------------------*/
+#tokenAcessoDiv {
+    position: relative;
+    width: 250px;
+}
+
+#tokenAcessoDiv label {
+    position: absolute;
+    top: 4px;
+    left: 8px;
+    pointer-events: none;   /* não bloqueia clique */
+    font-size: 14px;
+}
+
+#tokenAcessoDiv input {
+    background-color: #006477;
+    color: #ffffff;
+
+    width: 250px;
+    height: 25px;
+}
+
+#tokenAcessoDiv input::placeholder {
+    color: #ffffff;
+}
+
+/*----------------------------------------------------------------------------------*/
+
+input {
+    padding: 8px;
+    border-radius: 4px;
+    border: none;
+    margin-bottom: 10px;
+}
+
+button {
+    padding: 7px 15px;
+    background-color: #006477;
+    border: none;
+    
+    border-radius: 4px;
+    cursor: pointer;
+    color: #ffffff;
+}
+
+button:hover {
+    background-color: #006477;
+}
+
+/*----------------------------------------------------------------------------------*/
+
+.senha-container {
+    position: relative;
+    width: 250px;
+}
+
+.senha-container .senha {
+    width: 250px;
+    height: 25px;
+    background-color: #006477;
+    color: #ffffff;
+}
+
+/* Texto da senha exibido quando clicar */
+.senha-container .texto-senha {
+    position: absolute;
+    left: 8px;
+    top: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    color: #ffffff;
+    display: none;
+}
+
+/* Oculta o checkbox */
+.mostrar-checkbox {
+    display: none;
+}
+
+/* Quando o checkbox é marcado revela texto da senha */
+.mostrar-checkbox:checked ~ .texto-senha {
+    display: block;
+}
+
+/* Torna o input invisível quando mostrando senha */
+.mostrar-checkbox:checked ~ .senha {
+    color: transparent;
+    text-shadow: none;
+}
+
+
+
+.btn-mostrar {
+    margin-top: 5px;
+    width: 250px;
+
+    background-color: #006477;
+
+    padding: 6px;
+    border-radius: 6px;
+    text-align: center;
+
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.btn-mostrar:hover {
+    background: rgba(255, 255, 255, 0.12);
+}

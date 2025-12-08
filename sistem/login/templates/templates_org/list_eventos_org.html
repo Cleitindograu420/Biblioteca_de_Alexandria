@@ -36,7 +36,7 @@
                 <td>{{ evento.vagas }}</td>
                 <td>{{ evento.organizador.nome }}</td>
 
-                <td><a class="nav-link" href={% url 'editar_evento' evento.pk %}>Editar Evento</a></td>
+                <td><a class="nav-link" href="{% url 'editar_evento' evento.pk %}">Editar Evento</a></td>
                 
                 <td><form action="{% url 'deletar_evento' evento.pk %}" method="POST" style="display:inline;">
                         {% csrf_token %}

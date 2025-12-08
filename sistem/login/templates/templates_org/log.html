@@ -1,34 +1,36 @@
 {% extends "base_org.html" %}
+{% load static %}
 {% block content %}
+<link rel="stylesheet" href="{% static 'Css/Css_org/style_logs.css'%}">
 
 <h2>Lista de Logs</h2>
+<div class="eventos" >
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID Log</th>
+                <th>ID Evento</th>
+                <th>ID Usuário</th>
+                <th>Data da Ação</th>
+                <th>Hora da Ação</th>
+                <th>Ação</th>
+                <th></th>
+            </tr>
+        </thead>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>ID Log</th>
-            <th>ID Evento</th>
-            <th>ID Usuário</th>
-            <th>Data da Ação</th>
-            <th>Hora da Ação</th>
-            <th>Ação</th>
-            <th></th>
-        </tr>
-    </thead>
+        <tbody>
+            {% for Log in Logs %}
+            <tr>
+                <td>{{ Log.id_log }}</td>
+                <td>{{ Log.id_evento }}</td>
+                <td>{{ Log.usuario_id }}</td>
+                <td>{{ Log.dataAcao|date:"d/m"}}</td>
+                <td>{{ Log.horaAcao|time:"H:i"}}</td>
+                <td>{{ Log.acao }}</td>
 
-    <tbody>
-        {% for Log in Logs %}
-        <tr>
-            <td>{{ Log.id_log }}</td>
-            <td>{{ Log.id_evento }}</td>
-            <td>{{ Log.usuario_id }}</td>
-            <td>{{ Log.dataAcao|date:"d/m"}}</td>
-            <td>{{ Log.horaAcao|time:"H:i"}}</td>
-            <td>{{ Log.acao }}</td>
-
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock content %}

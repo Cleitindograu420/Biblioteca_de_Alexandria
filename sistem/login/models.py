@@ -19,17 +19,15 @@ class Evento (models.Model):
     dataFin = models.DateField()
     horasIni = models.TimeField(null=True, blank=True)
     horasFin = models.TimeField(null=True, blank=True)
-    horasDura = models.DurationField()
+    horasDura = models.IntegerField(default=0, validators=[MinValueValidator(0)])
     local = models.TextField(max_length=200)
-<<<<<<< HEAD
     quantPart = models.IntegerField(validators=[MinValueValidator(0)], null=False, blank=False, default=0)
     organizador = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name="eventos_criados")
-=======
-    quantPart = models.IntegerField(validators=[MinValueValidator(0)], null=True, blank=True, default=0)
-    organizador = models.ForeignKey(Usuario, on_delete=models.SET_NULL, null=True, blank=True)
->>>>>>> 8c27c0b7327a3e2dd3d55d8566fb9027360dd0bf
     vagas = models.IntegerField(validators=[MinValueValidator(1)], null=False)
     certificado = models.BooleanField(default=False)
+
+    banner = models.ImageField(upload_to='banners/',null=True,blank=True)
+
 class Inscrito(models.Model):
     id_inscricao = models.AutoField(primary_key=True, unique=True)
     usuario_id = models.ForeignKey(Usuario, on_delete = models.CASCADE)
