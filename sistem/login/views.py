@@ -308,6 +308,11 @@ def cadastro_eventos(request):
         except ValueError:
             return HttpResponse("O campo data de início e final devem ser uma data válida")
 
+        # Validação: não permitir data inicial anterior à data atual
+        data_hoje = datetime.now().date()
+        if dia_inicio < data_hoje:
+            return HttpResponse("A data inicial não pode ser anterior à data atual")
+
 
         novo_evento = Evento(
             nome=request.POST.get("nome"),
