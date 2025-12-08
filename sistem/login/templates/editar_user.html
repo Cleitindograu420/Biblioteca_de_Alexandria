@@ -25,6 +25,16 @@
         <label for="Instituicao">Instituicao de Ensino:</label>
         <input name= "instEnsino" class="form-control-sm" type="text" value='{{ usuario.instEnsino }}'>
     </div>
+
+    <div>
+      <label for="Tipo">Tipo:</label>
+      <select name="tipo" class="form-control-sm" required>
+          <option value="aluno" {% if usuario.tipo == "aluno" %}selected{% endif %}>Aluno</option>
+          <option value="professor" {% if usuario.tipo == "professor" %}selected{% endif %}>Professor</option>
+          <option value="organizador" {% if usuario.tipo == "organizador" %}selected{% endif %}>Organizador</option>
+      </select>
+    </div>
+
     
     <button class="form-control-sm" type="submit">Salvar perfil</button>
 </form>

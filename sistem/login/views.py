@@ -219,7 +219,7 @@ def editar_usuario(request):
         usuario.save()
         
         # Redireciona o usuário para a página de inscrição após a edição
-        return redirect("inscricao_eventos")
+        return redirect("inscricao_evento_disp")
 
         
     # Renderiza a página de edição com os dados do usuário atual

@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
+<link rel="stylesheet" href="{% static 'Css/style_eventos_disp.css'%}">
 
     <h1>Eventos em que {{ usuario.nome }} está inscrito</h1>
 
@@ -7,7 +9,7 @@
         <ul>
         {% for evento in eventos %}
             <li>
-                {{ evento.nome }} - {{ evento.tipoevento }} <br>
+                {{ evento.nome }} - {{ evento.tipoEvento }} <br>
                 Local: {{ evento.local }} <br>
                 Data: {{ evento.dataI }} até {{ evento.dataF }} <br>
                 Horário: {{ evento.horarioI }}h às {{ evento.horarioF }}h
