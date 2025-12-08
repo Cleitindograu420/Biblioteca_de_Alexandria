@@ -62,19 +62,8 @@
                 <input name="vagas" class="form-control-sm" type="number">
             </div>
 
-            <div id="org-field">
-                <label>Organizador Responsável:</label>
-                <select name='tipoEvento' required>
-                    <option value="">Selecione um evento</option>
-                    {% for org in organizadores %}
-                        <option value="{{ org.id }}">{{ org.nome }}</option>
-                    {% endfor %}
-                    {% for prof in professor %}
-                        <option value="{{ prof.id }}">{{ prof.nome }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div>
+            
+            
 
             <div class="div-button">
                 <button type="submit" class="btn-enviar">Enviar</button>

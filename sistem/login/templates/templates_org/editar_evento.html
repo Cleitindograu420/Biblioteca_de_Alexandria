@@ -36,7 +36,7 @@
             </div>
 
             <div class="campo" id="duracao-field">
-                <label>Duração do Evento(horas):</label>
+                <label>Duração do Evento:</label>
                 <input name="horasDura" class="form-control-sm" type="number" value="{{ evento.horasDura }}">
             </div>
 
@@ -50,7 +50,6 @@
                 <input name="horasFin" class="form-control-sm" type="time" value="{{ evento.horasFin|time:'H:i' }}">
             </div>
 
-
             <div class="campo" id="local-field">
                 <label>Local:</label>
                 <input name="local" class="form-control-sm" type="text" value="{{ evento.local }}">
@@ -60,7 +59,7 @@
                 <label>Vagas:</label>
                 <input name="vagas" class="form-control-sm" type="number" value="{{ evento.vagas }}">
             </div>
-
+            
             <div class="campo" id="org-field">
                 <label>Organizador Responsável:</label>
                 <select name='organizador' required> 

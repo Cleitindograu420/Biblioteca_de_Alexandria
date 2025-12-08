@@ -33,7 +33,7 @@
             <td>{{ evento.local }}</td>
             <td>{{ evento.quantPart }}</td>
             <td>{{ evento.vagas }}</td>
-            <td>{{ evento.organizador }}</td>
+            <td>{{ evento.organizador.nome }}</td>
 
             <td><a class="nav-link" href={% url 'editar_evento' evento.pk %}>Editar Evento</a></td>
             

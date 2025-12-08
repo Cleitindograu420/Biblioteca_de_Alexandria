@@ -4,6 +4,7 @@ from .models import Usuario,Evento, Inscrito, Certificado, Log
 from django.core.validators import RegexValidator, EmailValidator
 from django.core.exceptions import ValidationError
 from django.contrib import messages
+from datetime import datetime
 from django.db import transaction
 
 
@@ -255,6 +256,8 @@ def todos_eventos(request):
 def cadastro_eventos(request):
     from datetime import datetime
     usuario_id = request.session.get("usuario_id")
+    organizador = Usuario.objects.get(id_usuario=usuario_id)
+
     
     if not usuario_id:
         return redirect("login")
@@ -292,7 +295,7 @@ def cadastro_eventos(request):
             horasFin=request.POST.get("horasFin"),
             horasDura=request.POST.get("horasDura"),
             local=request.POST.get("local"),
-            organizador=request.POST.get("organResp"),
+            organizador=organizador,
             vagas=request.POST.get("vagas"),
         )
         
@@ -359,103 +362,112 @@ def deletar_evento(request, pk):
     return redirect("eventos")
 
 def editar_evento(request, pk):
+    organizador_id = request.session.get("organizador")
     usuario_id = request.session.get("usuario_id")
+    
+    organizador_obj = get_object_or_404(Usuario, id_usuario=organizador_id)
+    organizador_nome = organizador_obj.nome
     
     if not usuario_id:
         return redirect("login")
       
     try:
         usuario = get_object_or_404(Usuario, id_usuario = usuario_id)
-    
     except Usuario.DoesNotExist:
         return HttpResponse("Usuário não foi encontrado.")
     
-    #se o usuario n for organizador, redireciona ele para a pagina de inscricoes, apenas organizadores podem editar eventos
     if usuario.tipo != "organizador":
         return redirect("inscricao")
 
-    #pega o evento com o id passado na url    
     evento = get_object_or_404(Evento, pk = pk)
 
     context = {
         "evento": evento,
         "organizadores": Usuario.objects.filter(tipo="organizador"),
-        "professores": Usuario.objects.filter(tipo="professor"),
+        "professor": Usuario.objects.filter(tipo="professor"),
     }
     
     if request.method == "POST":
+        # 1. LEITURA DOS CAMPOS
         nome = request.POST.get("nome")
-        tipoevento = request.POST.get("tipo_evento")
-        dataI_str = request.POST.get("dataI")
-        dataF_str = request.POST.get("dataF")
-        horarioIni_str = request.POST.get("horarioI")
-        horarioFin_str = request.POST.get("horarioF")
+        tipoevento_id = request.POST.get("tipoEvento")
+        dataI_str = request.POST.get("dataIni")
+        dataF_str = request.POST.get("dataFin")
+        horarioIni_str = request.POST.get("horasIni")
+        horarioFin_str = request.POST.get("horasFin")
         local = request.POST.get("local")
-        quantPart_str = request.POST.get("quantPart")
-        organResp = request.POST.get("organResp")
+        organizador_id = request.POST.get("organizador")
         vagas_str = request.POST.get("vagas")
-        assinatura = request.POST.get("assinatura")
-        horasinp = request.POST.get("horas")
+        horasinp_str = request.POST.get("horasDura")
         
-        # Verifica se os campos, se preenchidos coretamenete, sao salvos
+
+        # 2. VALIDAÇÃO SIMPLES: Verifique apenas campos estritamente visíveis e obrigatórios no HTML
+        # Os campos quantPart e assinatura devem ser validados pelo seu valor ser maior que zero/existir.
+        campos_obrigatorios_visiveis = [
+            nome
+        ]
+
+        if not all(campos_obrigatorios_visiveis):
+            return HttpResponse("Todos os campos visíveis devem ser preenchidos.")
+
+        # 3. CONVERSÃO DE TIPOS E TRATAMENTO DE ERROS MAIS ROBUSTO
         try:
-            if nome and tipoevento and dataI_str and dataF_str and horarioIni_str and horarioFin_str and local and quantPart_str and organResp and vagas_str and assinatura and horasinp:
-                dataI = int(dataI_str)
-                dataF = int(dataF_str)
-                vagas = int(vagas_str)
-                quantPart = int(quantPart_str)
-                horarioI = int(horarioIni_str)
-                horarioF = int(horarioFin_str)
+            from datetime import datetime, time # Importar datetime aqui se não estiver no topo
 
-                if quantPart == 0:
-                    return HttpResponse("Um evento não pode ter 0 participantes.")
-                
-                if quantPart < 0:
-                    return HttpResponse("O evento não pode possuir um número negativo de participantes.")
+            # Converte Strings para Datas/Tempos
+            dataI = datetime.strptime(dataI_str, '%Y-%m-%d').date()
+            dataF = datetime.strptime(dataF_str, '%Y-%m-%d').date()
+            horarioI = datetime.strptime(horarioIni_str, '%H:%M').time()
+            horarioF = datetime.strptime(horarioFin_str, '%H:%M').time()
             
-                if dataI > dataF:
-                    return HttpResponse("A data inicial não pode ser depois da data final.")
-            
-                if horarioI < 0 or horarioI > 24 or horarioF < 0 or horarioF > 31:
-                    return HttpResponse("O horário deve ser entre 0 e 24.")
-            
-                if vagas > quantPart:
-                    return HttpResponse("Não pode haver uma quantidade maior de vagas do que de participantes.")
-            
-                if horarioI > horarioF:
-                    return HttpResponse("O horário inicial não pode ser menor que o horário final.")
-            
-                evento.nome = nome
-                evento.tipoevento = tipoevento
-                evento.dataI = dataI
-                evento.dataF = dataF
-                evento.horarioIni = horarioIni_str
-                evento.horarioFin = horarioFin_str
-                evento.local = local
-                evento.quantPart = quantPart
-                evento.organResp = organResp
-                evento.vagas = vagas
-                evento.save()
+            # Converte Strings para Inteiros (Usando valor padrão 0 em caso de erro/vazio)
+            # Use o operador OR para garantir que a string tem algum valor antes de converter.
+            vagas = int(vagas_str or 0)
+            horas_duracao = int(horasinp_str or 0)
 
-                # garante atomicidade e usa instâncias em vez de IDs
-                with transaction.atomic():
-                    Log.objects.create(
-                        id_evento=evento,
-                        usuario_id=usuario,
-                        acao=f"Evento editado: {evento.nome}"
-                    )
+        except ValueError:
+            return HttpResponse("Erro de formato: Certifique-se de que os campos de Data, Hora e Número estão preenchidos corretamente.")
+        
+        
+        if dataI > dataF:
+            return HttpResponse("A data inicial não pode ser depois da data final.")
+        
+        
+        if dataI == dataF and horarioI > horarioF:
+             return HttpResponse("O horário inicial não pode ser menor que o horário final.")
 
-                return redirect("even")
+        # SALVAMENTO DOS DADOS NO MODELO
+        try:
+            
+            evento.nome = nome
+            evento.tipoevento_id = tipoevento_id 
+            evento.dataI = dataI
+            evento.dataF = dataF
+            evento.horarioIni = horarioI
+            evento.horarioFin = horarioF
+            evento.local = local
+            evento.organResp_id = organizador_id 
+            evento.vagas = vagas
+            evento.horas_duracao = horas_duracao 
+            evento.organizador = organizador_nome
 
-        #verifica se algum campo nao foi preenchido
-        except UnboundLocalError:
-            return HttpResponse("Todas as caixas devem ser preenchidas.")
+            evento.save()
 
-        else:
-            return HttpResponse("Nenhum dos campos pode estar vazio.")
+            # Log
+            with transaction.atomic():
+                Log.objects.create(
+                    id_evento=evento,
+                    usuario_id=usuario,
+                    acao=f"Evento editado: {evento.nome}"
+                )
+
+            return redirect("eventos")
+
+        except Exception as e:
+            # Retorna o erro real do Django (ex: campo NOT NULL violado)
+            return HttpResponse(f"Erro ao salvar evento no banco de dados: {e}")
 
     return render(request, "templates_org/editar_evento.html", context)
-
 #Funcoes para inscricoes------------------------------------------------------------------------------------------------
 
 def home_inscricao(request):
