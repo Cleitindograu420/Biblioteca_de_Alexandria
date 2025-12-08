@@ -22,8 +22,7 @@ def base(request):
         return render(request, "base_org.html", {"usuario": usuario})
     else:
         return render(request, "home.html", {"usuario": usuario})
-
-
+    
 #Funcoes para usuarios--------------------------------------------------------------------------------------------------
 
 #funcao para deletar usuario de acordo com o id
