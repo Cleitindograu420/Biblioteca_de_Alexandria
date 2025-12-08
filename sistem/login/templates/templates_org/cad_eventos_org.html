@@ -10,70 +10,58 @@
                 <h1>Cadastro de Eventos</h1>
             </div> 
 
-            <div id="nome-field">
+            <div class="campo" id="nome-field">
                 <label>Nome do Evento:</label>
-                <input name="nome" class="form-control-sm" type="text">
+                <input name="nome" class="form-control-sm" type="text"required>
             </div>
 
-            <div id="tipo-field">
+            <div class="campo" id="tipo-field">
                 <label>Tipo do Evento:</label>
                 <select name='tipoEvento' required>
                     <option value="">Selecione um evento</option>
-                    <option value="1">Palestra</option>
-                    <option value="2">Workshop</option>
-                    <option value="3">Ensino presencial</option>
-                    <option value="4">Ensino a distancia</option>
+                    <option value="Palestra">Palestra</option>
+                    <option value="Workshop">Workshop</option>
+                    <option value="Ensino presencial">Ensino presencial</option>
+                    <option value="Ensino a distancia">Ensino a distancia</option>
                 </select>
             </div>
 
-            <div id="data_ini-field">
+            <div class="campo" id="data_ini-field">
                 <label>Data de início:</label>
-                <input name="dataIni" type="date" class="form-control-sm">
+                <input name="dataIni" type="date" class="form-control-sm"required>
             </div>
 
-            <div id="data_fin-field">
+            <div class="campo" id="data_fin-field">
                 <label>Data de encerramento:</label>
-                <input name="dataFin" type="date" class="form-control-sm">
+                <input name="dataFin" type="date" class="form-control-sm"required>
             </div>
 
-            <div id="duracao-field">
+            <div class="campo" id="duracao-field">
                 <label>Duração do Evento(horas):</label>
-                <input name="horasDura" class="form-control-sm" type="integer">
+                <input name="horasDura" class="form-control-sm" type="number"required>
             </div>
 
-            <div id="horas_ini-field">
+            <div class="campo" id="horas_ini-field">
                 <label>Horario de inicio:</label>
-                <input name="horasIni" class="form-control-sm" type="time">
+                <input name="horasIni" class="form-control-sm" type="time"required>
             </div>
 
-            <div id="horas_fin-field">
+            <div class="campo" id="horas_fin-field">
                 <label>Horario de encerramento:</label>
-                <input name="horasFin" class="form-control-sm" type="time">
+                <input name="horasFin" class="form-control-sm" type="time"required>
             </div>
 
 
-            <div id="local-field">
+            <div  class="campo">
                 <label>Local:</label>
-                <input name="local" class="form-control-sm" type="text">
+                <input name="local" id="local-field"  type="text"required>
             </div>
 
-            <div id="vagas-field">
+            <div class="campo" id="vagas-field">
                 <label>Vagas:</label>
-                <input name="vagas" class="form-control-sm" type="number">
+                <input name="vagas" class="form-control-sm" type="number"required>
             </div>
 
-            <div id="org-field">
-                <label>Organizador Responsável:</label>
-                <select name='tipoEvento' required>
-                    <option value="">Selecione um evento</option>
-                    {% for org in organizadores %}
-                        <option value="{{ org.id }}">{{ org.nome }}</option>
-                    {% endfor %}
-                    {% for prof in professor %}
-                        <option value="{{ prof.id }}">{{ prof.nome }}</option>
-                    {% endfor %}
-                </select>
-            </div>
             <div>
 
             <div class="div-button">

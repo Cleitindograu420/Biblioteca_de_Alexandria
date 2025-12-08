@@ -89,18 +89,20 @@ h2 {
     position: absolute;
     top: 4px;
     left: 8px;
-    pointer-events: none;   /* não bloqueia clique */
+    pointer-events: none;   
     font-size: 14px;
+    color: #ffffff; /* label branco */
 }
 
 #email-field input {
-    background-color: #006477;
+    color: #ffffff; /* texto digitado branco */
+    background-color: #006477; /* fundo azul, se quiser */
     width: 250px;
     height: 25px;
 }
 
 #email-field input::placeholder {
-    color: #ffffff;
+    color: #ffffff; /* placeholder branco */
 }
 
 
@@ -114,19 +116,20 @@ h2 {
     position: absolute;
     top: 4px;
     left: 8px;
-    color: white;
-    pointer-events: none;   /* não bloqueia clique */
+    color: #ffffff; /* label branco */
+    pointer-events: none;   
     font-size: 14px;
 }
 
 #password-field input {
+    color: #ffffff; /* texto digitado branco */
     background-color: #006477;
     width: 250px;
     height: 25px;
 }
 
 #password-field input::placeholder {
-    color: #ffffff;
+    color: #ffffff; /* placeholder branco */
 }
 
 /* estilo para botão */
@@ -134,7 +137,7 @@ h2 {
     padding: 8px 14px;
     border-radius: 6px;
     text-align: center;
-    display: block;      /* permite mover com margin-left */
+    display: block;     
     margin: 0 auto;
     border: none;
     cursor: pointer;
@@ -145,25 +148,28 @@ input {
     border-radius: 4px;
     border: none;
     margin-bottom: 10px;
+    color: #ffffff; /* texto digitado branco global para todos inputs */
+}
+
+input::placeholder {
+    color: #ffffff; /* placeholder branco global */
 }
 
 button {
     padding: 7px 15px;
     background-color: #006477;
     border: none;
-    
     border-radius: 4px;
     cursor: pointer;
     color: #ffffff;
 }
 
 button:hover {
-    background-color: #006477;
+    background-color: #001d24; /* leve escurecimento ao passar o mouse */
 }
-
 
 .btn_extras {
     list-style: none;
     text-align: center;
-    padding-left: 0; /* remove o recuo padrão */
+    padding-left: 0;
 }

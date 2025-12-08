@@ -1,48 +1,50 @@
 {% extends "base_org.html" %}
+{% load static %}
 {% block content %}
-
+<link rel="stylesheet" href="{% static 'Css/style_eventos_disp.css'%}">
 <h2>Lista de Eventos</h2>
+<div class="eventos">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Tipo</th>
+                <th>Data de inicio</th>
+                <th>Data de encerramento</th>
+                <th>Hora de inicio</th>
+                <th>Hora de termino</th>
+                <th>Duracao</th>
+                <th>Local</th>
+                <th>Participantes</th>
+                <th>Vagas</th>
+                <th>Organizador</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for evento in eventos %}
+            <tr>
+                <td>{{ evento.nome }}</td>
+                <td>{{ evento.tipoEvento }}</td>
+                <td>{{ evento.dataIni|date:"d/m" }}</td>
+                <td>{{ evento.dataFin|date:"d/m" }}</td>
+                <td>{{ evento.horasIni|time:"H:i" }}</td>
+                <td>{{ evento.horasFin|time:"H:i" }}</td>
+                <td>{{ evento.horasDura }}</td>
+                <td>{{ evento.local }}</td>
+                <td>{{ evento.quantPart }}</td>
+                <td>{{ evento.vagas }}</td>
+                <td>{{ evento.organizador.nome }}</td>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Nome</th>
-            <th>Tipo</th>
-            <th>Data de inicio</th>
-            <th>Data de encerramento</th>
-            <th>Hora de inicio</th>
-            <th>Hora de termino</th>
-            <th>Duracao</th>
-            <th>Local</th>
-            <th>Participantes</th>
-            <th>Vagas</th>
-            <th>Organizador</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for evento in eventos %}
-        <tr>
-            <td>{{ evento.nome }}</td>
-            <td>{{ evento.tipoevento }}</td>
-            <td>{{ evento.dataIni|date:"d/m" }}</td>
-            <td>{{ evento.dataFin|date:"d/m" }}</td>
-            <td>{{ evento.horasIni|time:"H:i" }}</td>
-            <td>{{ evento.horasFin|time:"H:i" }}</td>
-            <td>{{ evento.horasDura }}</td>
-            <td>{{ evento.local }}</td>
-            <td>{{ evento.quantPart }}</td>
-            <td>{{ evento.vagas }}</td>
-            <td>{{ evento.organizador }}</td>
-
-            <td><a class="nav-link" href={% url 'editar_evento' evento.pk %}>Editar Evento</a></td>
-            
-            <td><form action="{% url 'deletar_evento' evento.pk %}" method="POST" style="display:inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">Excluir</button>
-                </form></td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+                <td><a class="nav-link" href={% url 'editar_evento' evento.pk %}>Editar Evento</a></td>
+                
+                <td><form action="{% url 'deletar_evento' evento.pk %}" method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Excluir</button>
+                    </form></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock content %}

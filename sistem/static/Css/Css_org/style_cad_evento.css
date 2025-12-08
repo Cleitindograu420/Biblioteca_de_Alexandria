@@ -14,7 +14,7 @@
     font-family: "Segoe UI", Arial, sans-serif;
     line-height: 1.7;
     text-align: justify;
-
+    transform: translate(0%, 10%);   
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
 }
@@ -30,25 +30,20 @@
 
 .campo {
     display: flex;
-    /* Mantém o rótulo à esquerda e o input à direita */
-    justify-content: space-between; 
     align-items: center;
+    gap: 40px; /* agora funciona */
     width: 100%;
-    /* Aumentei a largura máxima para dar mais espaço para o rótulo e o input */
-    max-width: 600px; 
-    padding: 0 10px; 
-    box-sizing: border-box;
+    max-width: 600px;
+    margin-bottom: 5px;
 }
 
 .campo label {
-    /* NOVIDADE: Define uma largura fixa para o rótulo. Isso garante que todos os inputs fiquem alinhados */
-    width: 250px; 
-    text-align: left;
-    /* A distância entre o rótulo (que agora tem 250px) e o input */
-    margin-right: 30px; /* Reduzido de 60px para um espaçamento mais limpo */
-    font-size: 1.05rem;
+    width: 250px;
     color: #eaeaea;
-    /* Remover flex-grow: 1, pois estamos usando largura fixa */
+}
+#local-field  {
+    background-color: #006477;
+    color: #eaeaea;
 }
 
 
@@ -89,4 +84,10 @@
 
 .btn-enviar:hover {
     background-color: #004f5e;
+}
+
+.infos input,
+.infos select {
+    background-color: #006477 !important;
+    color: #fff;
 }

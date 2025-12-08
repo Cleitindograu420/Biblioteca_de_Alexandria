@@ -10,7 +10,10 @@ from django.db import transaction
 #funcao para renderizar a pagina home
 def base(request):
     usuario_id = request.session.get("usuario_id")
-
+    try:
+        usuario = Usuario.objects.get(id_usuario=usuario_id)
+    except Usuario.DoesNotExist:
+        return redirect('login')
     if not usuario_id:
         #teste em front 
         return redirect("login")
@@ -292,11 +295,11 @@ def cadastro_eventos(request):
             horasFin=request.POST.get("horasFin"),
             horasDura=request.POST.get("horasDura"),
             local=request.POST.get("local"),
-            organizador=request.POST.get("organResp"),
+            organizador = usuario,
             vagas=request.POST.get("vagas"),
         )
         
-
+        novo_evento.organizador = usuario
         novo_evento.save()
 
         Log.objects.create(

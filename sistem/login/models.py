@@ -22,7 +22,7 @@ class Evento (models.Model):
     horasDura = models.DurationField()
     local = models.TextField(max_length=200)
     quantPart = models.IntegerField(validators=[MinValueValidator(0)], null=False, blank=False, default=0)
-    organizador = models.TextField(max_length=200, null=False, blank=False)
+    organizador = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name="eventos_criados")
     vagas = models.IntegerField(validators=[MinValueValidator(1)], null=False)
     certificado = models.BooleanField(default=False)
 class Inscrito(models.Model):
